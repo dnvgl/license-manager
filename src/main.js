@@ -1,3 +1,5 @@
+const path = require("path");
+
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { autoUpdater } = require("electron-updater");
 
@@ -16,10 +18,10 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
-  mainWindow.loadFile("renderer/index.html");
+  mainWindow.loadFile("src/renderer/index.html");
   mainWindow.on("closed", function () {
     mainWindow = null;
   });
@@ -66,7 +68,6 @@ function handleSquirrelEvent() {
   }
 
   const ChildProcess = require("child_process");
-  const path = require("path");
 
   const appFolder = path.resolve(process.execPath, "..");
   const rootAtomFolder = path.resolve(appFolder, "..");

@@ -1,5 +1,9 @@
 {
   "dest": "dist/installers/",
   "icon": "resources/Icon.ico",
-  "tags": ["Utility"]
+  "certificateFile": "./code-signing-cert/DNV GL AS 2020.pfx",
+  "certificatePassword": "Cider er bedre enn Brus",
+  "tags": [
+    "Utility"
+  ]
 }
