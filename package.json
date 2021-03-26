@@ -2,12 +2,11 @@
   "name": "license-manager",
   "version": "0.0.1",
   "description": "License manager for digital solutions",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder build --win --publish never",
-    "deploy": "electron-builder build --win --publish always",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "electron-packager . app --platform win32 --arch x64 --out dist/",
+    "setup": "electron-installer-windows --src dist/app-win32-x64/ --config config.json"
   },
   "repository": {
     "type": "git",
@@ -21,9 +20,27 @@
   "homepage": "https://github.com/dnvgl/license-manager#readme",
   "devDependencies": {
     "electron": "^12.0.2",
-    "electron-builder": "^22.10.5"
+    "electron-builder": "^22.10.5",
+    "electron-installer-windows": "^3.0.0",
+    "electron-winstaller": "^5.0.0"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^4.3.8"
+  },
+  "build": {
+    "appId": "com.dnv.license-manager",
+    "win": {
+      "target": "nsis",
+      "certificateSubjectName": "DNV GL AS",
+      "certificateFile": "./code-signing-cert/DNV GL AS 2020.pfx",
+      "certificatePassword": "Cider er bedre enn Brus",
+      "timeStampServer": "http://timestamp.digicert.com",
+      "signingHashAlgorithms": [
+        "sha256"
+      ],
+      "publisherName": "DNV",
+      "signAndEditExecutable": true
+    }
   }
 }
