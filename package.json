@@ -1,0 +1,29 @@
+{
+  "name": "license-manager",
+  "version": "0.0.1",
+  "description": "License manager for digital solutions",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build --win --publish always",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnvgl/license-manager.git"
+  },
+  "author": "lars.peder.amlie@dnv.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dnvgl/license-manager/issues"
+  },
+  "homepage": "https://github.com/dnvgl/license-manager#readme",
+  "devDependencies": {
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5"
+  },
+  "dependencies": {
+    "electron-updater": "^4.3.8"
+  }
+}
