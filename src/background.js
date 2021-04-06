@@ -4,7 +4,11 @@ import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
+import logger from "electron-log";
 import path from "path";
+
+autoUpdater.logger = logger;
+autoUpdater.logger.transports.file.level = "info";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
