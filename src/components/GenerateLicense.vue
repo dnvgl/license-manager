@@ -41,8 +41,6 @@ export default {
   },
   computed: {
     primaryMacAddress: function() {
-      console.log(this.macAddresses);
-
       const wireless = getMac(this.macAddresses, "wireless");
       if (wireless) {
         return wireless.mac.replace(/:/g, "");
@@ -70,18 +68,23 @@ export default {
     this.running = true;
 
     const token = window.electron.getToken();
-
-    console.log(token);
+    const payloadBase64 = token.split(".")[1]; // the payload is the second dot-separated component of the JWT
+    const jwt = JSON.parse(
+      Buffer.from(payloadBase64, "base64").toString("utf8")
+    ); // Base64-decode and get the JSON payload
 
     const license = await axios.post(
       "http://localhost:3000/api/generateLicense",
       {
         hostId: this.primaryMacAddress,
-        fedId: "astrid",
+        fedId: jwt.userId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
-    console.log(license);
+    window.electron.writeLicenseFile("license.lic", license.data);
 
     this.running = false;
   },

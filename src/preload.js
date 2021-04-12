@@ -1,9 +1,9 @@
 const os = require("os");
-import authService from "./auth-service";
-
+const fs = require("fs");
 const { contextBridge } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
   getMacAddress: () => os.networkInterfaces(),
-  getToken: () => authService.getAccessToken(),
+  getToken: () => window.process.argv.slice(-1)[0],
+  writeLicenseFile: (path, data) => fs.writeFileSync(path, data),
 });

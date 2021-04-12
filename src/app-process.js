@@ -1,11 +1,16 @@
-const { BrowserWindow } = require("electron");
+import { BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
+
+import authService from "./auth-service";
 
 let win = null;
 
 async function createAppWindow() {
   // Create the browser window.
+
+  const token = authService.getAccessToken();
+
   win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -14,6 +19,7 @@ async function createAppWindow() {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       preload: path.join(__dirname, "preload.js"),
+      additionalArguments: [token],
     },
   });
 

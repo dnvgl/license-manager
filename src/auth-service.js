@@ -67,8 +67,6 @@ async function refreshTokens() {
 
       accessToken = response.data.access_token;
       //profile = jwt_decode(response.data.profile_info);
-
-      console.log(accessToken);
     } catch (error) {
       await logout();
       throw error;
@@ -101,8 +99,6 @@ async function loadTokens(callbackURL) {
 
   try {
     const response = await axios(options);
-
-    console.log(response.data);
 
     accessToken = response.data.access_token;
 
