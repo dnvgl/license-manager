@@ -1,4 +1,8 @@
 module.exports = {
+  transpileDependencies: [
+    "bootstrap-vue",
+    "@dnvgl-onefoundation/onedesign-vue",
+  ],
   configureWebpack: {
     module: {
       rules: [

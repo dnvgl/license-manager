@@ -1,21 +1,20 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld :msg="mac_address" />
+  <div id="app" class="container">
+    <generate-license :mac-addresses="macAddress" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import GenerateLicense from "./components/GenerateLicense.vue";
 
 export default {
   name: "App",
   components: {
-    HelloWorld,
+    GenerateLicense,
   },
   data() {
     return {
-      mac_address: JSON.stringify(window.electron.getMacAddress()),
+      macAddress: window.electron.getMacAddress(),
     };
   },
 };
