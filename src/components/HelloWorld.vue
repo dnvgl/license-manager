@@ -8,7 +8,7 @@
         >vue-cli documentation</a
       >.
     </p>
-    <h3>New version</h3>
+    <h3>Yet another version</h3>
     <ul>
       <li>
         <a
