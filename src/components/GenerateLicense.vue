@@ -13,22 +13,7 @@
 
 <script>
 import axios from "axios";
-
-function getMac(macAddresses, name) {
-  for (const key in macAddresses) {
-    if (!name || key.toLowerCase().indexOf(name) > -1) {
-      if (Object.hasOwnProperty.call(macAddresses, key)) {
-        const candidate = macAddresses[key].filter(
-          (m) => !m.internal && m.mac !== "00:00:00:00:00:00"
-        )[0];
-        if (candidate) {
-          return candidate;
-        }
-      }
-    }
-  }
-  return undefined;
-}
+import { primaryMacAddress } from "../mac-address";
 
 export default {
   props: {
@@ -46,27 +31,7 @@ export default {
         : "Done";
     },
     primaryMacAddress() {
-      const wireless = getMac(this.macAddresses, "wireless");
-      if (wireless) {
-        return wireless.mac.replace(/:/g, "");
-      }
-      const wifi = getMac(this.macAddresses, "wifi");
-      if (wifi) {
-        return wifi.mac.replace(/:/g, "");
-      }
-      const ethernet = getMac(this.macAddresses, "ethernet");
-      if (ethernet) {
-        return ethernet.mac.replace(/:/g, "");
-      }
-      const eth = getMac(this.macAddresses, "eth");
-      if (eth) {
-        return eth.mac.replace(/:/g, "");
-      }
-      const def = getMac(this.macAddresses);
-      if (def) {
-        return def.mac.replace(/:/g, "");
-      }
-      return undefined;
+      return primaryMacAddress(this.macAddresses);
     },
   },
   async mounted() {

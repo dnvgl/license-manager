@@ -9,7 +9,8 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -20,11 +21,13 @@
     "@dnvgl-onefoundation/onedesign": "^2.6.1",
     "@dnvgl-onefoundation/onedesign-vue": "^1.5.1",
     "axios": "^0.21.1",
+    "base64url": "^3.0.1",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "electron-log": "^4.3.2",
     "electron-updater": "^4.3.8",
     "keytar": "^7.6.0",
+    "randomstring": "^1.1.5",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -37,6 +40,7 @@
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "mocha": "^8.3.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6",

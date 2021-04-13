@@ -1,7 +1,9 @@
-//const jwt_decode = require("jwt-decode").default;
 const axios = require("axios");
 const url = require("url");
 const querystring = require("querystring");
+const randomstring = require("randomstring");
+const crypto = require("crypto");
+const base64url = require("base64url");
 const {
   getRefreshToken,
   setRefreshToken,
@@ -9,40 +11,41 @@ const {
 } = require("./token-store");
 
 const authDomain =
-  "login.microsoftonline.com/te/dnvglb2cstag.onmicrosoft.com/b2c_1a_signinwithadfsidp/oauth2/v2.0";
-const clientId = "b480340b-31f0-4179-b5fc-b5fcdf0a511e";
-const clientSecret = "BFDmgX5bNOyCM3y-URco0.__dabF1Y_9JG";
+  "login.veracity.com/te/dnvglb2cprod.onmicrosoft.com/b2c_1a_signinwithadfsidp/oauth2/v2.0";
+const clientId = "44a7ad55-45bd-4e04-b1c0-5bf0aef40ea4";
+
+const code_verifier = randomstring.generate(128);
+const base64Digest = crypto
+  .createHash("sha256")
+  .update(code_verifier)
+  .digest("base64");
+const code_challenge = base64url.fromBase64(base64Digest);
 
 const redirectUri = "http://localhost/callback";
 
 let accessToken = null;
-//let profile = null;
 let refreshToken = null;
 
 function getAccessToken() {
   return accessToken;
 }
 
-/*
-function getProfile() {
-  return profile;
-}
-*/
-
-//https://login.microsoftonline.com/te/dnvglb2cstag.onmicrosoft.com/b2c_1a_signinwithadfsidp/oauth2/v2.0/authorize?client_id=b480340b-31f0-4179-b5fc-b5fcdf0a511e&response_type=code&scope=offline_access https://dnvglb2cstag.onmicrosoft.com/28b7ec7b-db04-40bb-a042-b7ac5a8b36be/user_impersonation&redirect_uri=https://ecosystem-dev.dnvgl.com/session/auth-callback/veracity
+//https://login.veracity.com/te/dnvglb2cprod.onmicrosoft.com/b2c_1a_signinwithadfsidp/oauth2/v2.0/authorize?client_id=b480340b-31f0-4179-b5fc-b5fcdf0a511e&response_type=code&scope=offline_access https://dnvglb2cprod.onmicrosoft.com/28b7ec7b-db04-40bb-a042-b7ac5a8b36be/user_impersonation&redirect_uri=https://ecosystem-dev.dnvgl.com/session/auth-callback/veracity
 
 function getAuthenticationURL() {
   return (
     "https://" +
     authDomain +
     "/authorize?" +
-    "scope=offline_access https://dnvglb2cstag.onmicrosoft.com/28b7ec7b-db04-40bb-a042-b7ac5a8b36be/user_impersonation&" +
-    "response_type=code&" +
-    "client_id=" +
+    "scope=offline_access https://dnvglb2cprod.microsoftonline.com/44a7ad55-45bd-4e04-b1c0-5bf0aef40ea4/user_impersonation&" +
+    "response_type=code" +
+    "&client_id=" +
     clientId +
-    "&" +
-    "redirect_uri=" +
-    redirectUri
+    "&redirect_uri=" +
+    redirectUri +
+    "&code_challenge=" +
+    code_challenge +
+    "&code_challenge_method=S256"
   );
 }
 
@@ -57,7 +60,7 @@ async function refreshTokens() {
       data: querystring.stringify({
         grant_type: "refresh_token",
         client_id: clientId,
-        client_secret: clientSecret,
+        //client_secret: clientSecret,
         refresh_token: refreshToken,
       }),
     };
@@ -66,7 +69,6 @@ async function refreshTokens() {
       const response = await axios(refreshOptions);
 
       accessToken = response.data.access_token;
-      //profile = jwt_decode(response.data.profile_info);
     } catch (error) {
       await logout();
       throw error;
@@ -83,9 +85,10 @@ async function loadTokens(callbackURL) {
   const exchangeOptions = {
     grant_type: "authorization_code",
     client_id: clientId,
-    client_secret: clientSecret,
+    //client_secret: clientSecret,
     code: query.code,
     redirect_uri: redirectUri,
+    code_verifier: code_verifier,
   };
 
   const options = {
@@ -99,6 +102,8 @@ async function loadTokens(callbackURL) {
 
   try {
     const response = await axios(options);
+
+    console.log(response.data);
 
     accessToken = response.data.access_token;
 
@@ -120,7 +125,6 @@ async function loadTokens(callbackURL) {
 async function logout() {
   await deleteRefreshToken();
   accessToken = null;
-  //profile = null;
   refreshToken = null;
 }
 
@@ -132,7 +136,6 @@ module.exports = {
   getAccessToken,
   getAuthenticationURL,
   getLogOutUrl,
-  //getProfile,
   loadTokens,
   logout,
   refreshTokens,
