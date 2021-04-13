@@ -89,8 +89,6 @@ export default {
       }
     );
 
-    console.log(license);
-
     const contentDisposition = license.headers["content-disposition"];
     const filename = contentDisposition.substring(
       contentDisposition.indexOf("=") + 1
