@@ -73,7 +73,9 @@ export default {
         ); // Base64-decode and get the JSON payload
 
         const license = await axios.post(
-          "http://localhost:3000/api/generateLicense",
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:3000/api/generateLicense"
+            : "https://software-license-dev/api/generateLicense",
           {
             hostId: this.primaryMac,
             fedId: jwt.userId,
