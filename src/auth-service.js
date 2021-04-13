@@ -36,9 +36,9 @@ function getAuthenticationURL() {
   return (
     "https://" +
     authDomain +
-    "/authorize?" +
-    "scope=offline_access https://dnvglb2cprod.microsoftonline.com/44a7ad55-45bd-4e04-b1c0-5bf0aef40ea4/user_impersonation&" +
-    "response_type=code" +
+    "/authorize" +
+    "?scope=offline_access https://dnvglb2cprod.onmicrosoft.com/83054ebf-1d7b-43f5-82ad-b2bde84d7b75/user_impersonation" +
+    "&response_type=code" +
     "&client_id=" +
     clientId +
     "&redirect_uri=" +
