@@ -1,6 +1,6 @@
 <template>
   <div class="mac">
-    <span>{{ primaryMacAddress }}</span>
+    <span>{{ message }}</span>
     <b-progress
       :value="100"
       :striped="running"
@@ -40,7 +40,12 @@ export default {
     };
   },
   computed: {
-    primaryMacAddress: function() {
+    message() {
+      return this.running
+        ? `Generating license using mac address ${this.primaryMacAddress}`
+        : "Done";
+    },
+    primaryMacAddress() {
       const wireless = getMac(this.macAddresses, "wireless");
       if (wireless) {
         return wireless.mac.replace(/:/g, "");
@@ -84,7 +89,14 @@ export default {
       }
     );
 
-    window.electron.writeLicenseFile("license.lic", license.data);
+    console.log(license);
+
+    const contentDisposition = license.headers["content-disposition"];
+    const filename = contentDisposition.substring(
+      contentDisposition.indexOf("=") + 1
+    );
+
+    window.electron.writeLicenseFile(filename, license.data);
 
     this.running = false;
   },
