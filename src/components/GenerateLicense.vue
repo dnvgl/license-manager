@@ -75,7 +75,7 @@ export default {
         const license = await axios.post(
           process.env.NODE_ENV === "development"
             ? "http://localhost:3000/api/generateLicense"
-            : "https://software-license-dev/api/generateLicense",
+            : "https://software-license-dev.dnvgl.com/api/generateLicense",
           {
             hostId: this.primaryMac,
             fedId: jwt.userId,

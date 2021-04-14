@@ -32,9 +32,13 @@ function primaryMacAddress(macAddresses) {
   if (wireless) {
     return wireless;
   }
-  const wifi = getMac(macAddresses, "wifi");
-  if (wifi) {
-    return wifi;
+  const wifi1 = getMac(macAddresses, "wi-fi");
+  if (wifi1) {
+    return wifi1;
+  }
+  const wifi2 = getMac(macAddresses, "wifi");
+  if (wifi2) {
+    return wifi2;
   }
   const ethernet = getMac(macAddresses, "ethernet");
   if (ethernet) {

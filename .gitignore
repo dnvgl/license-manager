@@ -1,5 +1,6 @@
 electron-builder.yml
 code-signing-cert/
+config.json
 
 # Logs
 logs
