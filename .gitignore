@@ -1,6 +1,7 @@
 electron-builder.yml
 code-signing-cert/
 config.json
+.npmrc
 
 # Logs
 logs
