@@ -2,6 +2,7 @@ electron-builder.yml
 code-signing-cert/
 config.json
 .npmrc
+setenv.ps1
 
 # Logs
 logs
