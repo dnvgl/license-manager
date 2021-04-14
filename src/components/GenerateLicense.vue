@@ -1,9 +1,18 @@
 <template>
   <div class="mac">
-    <fieldset>
-      <legend>Mac address</legend>
-      <b-form-select v-model="selected" :options="options"></b-form-select>
-    </fieldset>
+    <b-form-group
+      id="input-group-1"
+      label="Mac address:"
+      label-for="macInput"
+      description="We need your mac address to generate a license for your machine.  Usually you can use the default"
+    >
+      <b-form-select
+        id="macInput"
+        v-model="selected"
+        :options="options"
+      ></b-form-select>
+    </b-form-group>
+
     <hr />
 
     <b-button @click="generate">Generate license</b-button>
