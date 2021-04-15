@@ -1,5 +1,5 @@
 <template>
-  <div class="mac">
+  <div>
     <b-form-group
       id="input-group-1"
       label="Mac address:"
@@ -23,6 +23,7 @@
       :value="100"
       :striped="running"
       :animated="running"
+      v-show="showProgress"
       variant="primary"
       class="mt-2"
     ></b-progress>
@@ -41,6 +42,7 @@ export default {
   data() {
     return {
       running: false,
+      showProgress: false,
       selected: undefined,
       message: "",
     };
@@ -73,6 +75,7 @@ export default {
     async generate() {
       try {
         this.running = true;
+        this.showProgress = true;
         this.message = `Generating license using mac address ${this.selected.mac}`;
 
         const token = window.electron.getToken();
@@ -118,21 +121,3 @@ export default {
   },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
