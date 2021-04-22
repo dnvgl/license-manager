@@ -2,7 +2,7 @@
 
 license manager for ds applications
 
-# pubishing
+# publishing
 
 set environment variables
 update package.json version
