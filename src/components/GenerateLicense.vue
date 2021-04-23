@@ -102,9 +102,9 @@ export default {
           contentDisposition.indexOf("=") + 1
         );
 
-        window.electron.writeLicenseFile(filename, license.data);
+        const loc = window.electron.writeLicenseFile(filename, license.data);
 
-        this.message = "License generation completed successfully";
+        this.message = `License written to ${loc}`;
       } catch {
         this.message = "License generation failed";
       } finally {

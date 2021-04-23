@@ -8,14 +8,19 @@ contextBridge.exposeInMainWorld("electron", {
   getMacAddress: () => os.networkInterfaces(),
   getToken: () => window.process.argv.slice(-1)[0],
   writeLicenseFile: (filename, data) => {
-    const directory = getLicenseFileDirectory(process.env.DNVSLM_LICENSE_FILE);
+    let directory = getLicenseFileDirectory(process.env.DNVSLM_LICENSE_FILE);
 
-    fs.mkdir(directory, { recursive: true }, (error) => {
-      if (error) {
-        console.log(error);
+    if (!fs.existsSync(path)) {
+      try{
+        fs.mkdirSync(directory, { recursive: true })
+      } catch (e) {
+        console.log(e)  
+        directory = "C:\\flexlm"
+        fs.mkdirSync(directory, { recursive: true })
       }
-    });
-
-    fs.writeFileSync(path.join(directory, filename), data);
+    }
+    const loc = path.join(directory, filename)
+    fs.writeFileSync(loc, data);
+    return loc
   },
 });
