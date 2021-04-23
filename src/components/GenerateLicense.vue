@@ -105,7 +105,7 @@ export default {
         const loc = window.electron.writeLicenseFile(filename, license.data);
 
         this.message = `License written to ${loc}`;
-      } catch {
+      } catch (e) {
         this.message = "License generation failed";
       } finally {
         this.running = false;

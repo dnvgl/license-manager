@@ -18,7 +18,7 @@ describe("license-file", function() {
 
     it("should return the first directory when supplied a key", function() {
       const licenseFileDirectory = getLicenseFileDirectory(
-        "27000@localhost;C:\\flexlm3;C:\\flexlm2\\dnvs_any.lic;",
+        "27000@localhost;C:\\Program Files\DNVGL;C:\\flexlm3;C:\\flexlm2\\dnvs_any.lic;",
         ";"
       );
       assert.strictEqual(licenseFileDirectory, "C:\\flexlm3");

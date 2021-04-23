@@ -10,16 +10,17 @@ contextBridge.exposeInMainWorld("electron", {
   writeLicenseFile: (filename, data) => {
     let directory = getLicenseFileDirectory(process.env.DNVSLM_LICENSE_FILE);
 
-    if (!fs.existsSync(path)) {
+    if (!fs.existsSync(directory)) {
       try{
         fs.mkdirSync(directory, { recursive: true })
       } catch (e) {
-        console.log(e)  
+        console.log(e)
         directory = "C:\\flexlm"
         fs.mkdirSync(directory, { recursive: true })
       }
     }
     const loc = path.join(directory, filename)
+
     fs.writeFileSync(loc, data);
     return loc
   },
