@@ -23,7 +23,7 @@ const code_challenge = base64url.fromBase64(base64Digest);
 
 const redirectUri = "http://localhost/callback";
 
-let accessToken = null;
+let accessToken = "Unauthorized";
 let refreshToken = null;
 
 function getAccessToken() {
@@ -124,7 +124,7 @@ async function loadTokens(callbackURL) {
 
 async function logout() {
   await deleteRefreshToken();
-  accessToken = null;
+  accessToken = "Unauthorized";
   refreshToken = null;
 }
 

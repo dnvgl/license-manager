@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="container">
-    <generate-license :mac-addresses="macAddress" />
-  </div>
+  <b-container id="app">
+    <generate-license class="pt-2" :mac-addresses="macAddress" />
+  </b-container>
 </template>
 
 <script>

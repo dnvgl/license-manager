@@ -18,6 +18,13 @@ function createAuthWindow() {
 
   win.loadURL(authService.getAuthenticationURL());
 
+  const contents = win.webContents;
+
+  contents.on("did-fail-load", () => {
+    createAppWindow();
+    destroyAuthWin();
+  });
+
   const {
     session: { webRequest },
   } = win.webContents;
