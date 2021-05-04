@@ -165,6 +165,7 @@ export default {
 
         this.status = "Success";
       } catch (e) {
+        console.log("not able to load licenses");
         this.status = "Failed";
       }
     },
@@ -182,6 +183,9 @@ export default {
       .then((al) => {
         this.availableLicenses = al.data;
         this.status = "Loaded";
+      })
+      .catch(() => {
+        this.status = "Failed";
       });
 
     const defaultOption = this.options.find(
