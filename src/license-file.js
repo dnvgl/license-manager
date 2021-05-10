@@ -26,7 +26,7 @@ function getLicenseFileDirectories(envVariable) {
   console.log("license file locations:");
   console.log(result);
 
-  return result;
+  return result.filter((r) => r.length);
 }
 
 module.exports = { getLicenseFileDirectories };

@@ -1,27 +1,39 @@
 const assert = require("assert");
-const { getLicenseFileDirectory } = require("../src/license-file");
+const { getLicenseFileDirectories } = require("../src/license-file");
 
 describe("license-file", function() {
   describe("#getLicenseFileDirectory", function() {
     it("should return C:\\flexlm by default", function() {
-      const licenseFileDirectory = getLicenseFileDirectory();
-      assert.strictEqual(licenseFileDirectory, "C:\\flexlm");
+      const licenseFileDirectories = getLicenseFileDirectories();
+      assert.deepStrictEqual(licenseFileDirectories, [
+        "c:\\flexlm",
+        "c:\\programdata\\dnvgl\\license files",
+      ]);
     });
 
-    it("should return the first directory when supplied a key", function() {
-      const licenseFileDirectory = getLicenseFileDirectory(
+    it("should return all the directories when supplied a key", function() {
+      const licenseFileDirectories = getLicenseFileDirectories(
         "27000@localhost;C:\\flexlm2\\dnvs_any.lic;",
         ";"
       );
-      assert.strictEqual(licenseFileDirectory, "C:\\flexlm2");
+      assert.deepStrictEqual(licenseFileDirectories, [
+        "c:\\flexlm2",
+        "c:\\flexlm",
+        "c:\\programdata\\dnvgl\\license files",
+      ]);
     });
 
-    it("should return the first directory when supplied a key", function() {
-      const licenseFileDirectory = getLicenseFileDirectory(
-        "27000@localhost;C:\\Program Files\DNVGL;C:\\flexlm3;C:\\flexlm2\\dnvs_any.lic;",
+    it("should return all the directories when supplied a key", function() {
+      const licenseFileDirectories = getLicenseFileDirectories(
+        "27000@localhost;C:\\Program FilesDNVGL;C:\\flexlm3;C:\\flexlm2\\dnvs_any.lic;",
         ";"
       );
-      assert.strictEqual(licenseFileDirectory, "C:\\flexlm3");
+      assert.deepStrictEqual(licenseFileDirectories, [
+        "c:\\flexlm3",
+        "c:\\flexlm2",
+        "c:\\flexlm",
+        "c:\\programdata\\dnvgl\\license files",
+      ]);
     });
   });
 });
