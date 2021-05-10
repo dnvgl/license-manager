@@ -33,6 +33,22 @@ async function createAppWindow() {
             win.close();
           },
         },
+        {
+          label: "Logout and Exit",
+          click() {
+            const logoutWindow = new BrowserWindow({
+              show: false,
+            });
+
+            logoutWindow.loadURL(authService.getLogOutUrl());
+
+            logoutWindow.on("ready-to-show", async () => {
+              logoutWindow.close();
+              await authService.logout();
+              win.close();
+            });
+          },
+        },
       ],
     },
     {
@@ -43,7 +59,21 @@ async function createAppWindow() {
           click() {
             dialog.showMessageBox({
               title: "About",
-              message: `You are running version : ${app.getVersion()}`,
+              message: `You are running version: ${app.getVersion()}`,
+            });
+          },
+        },
+        {
+          label: "Logged in user",
+          click() {
+            const payloadBase64 = token.split(".")[1]; // the payload is the second dot-separated component of the JWT
+            const jwt = JSON.parse(
+              Buffer.from(payloadBase64, "base64").toString("utf8")
+            ); // Base64-decode and get the JSON payload
+
+            dialog.showMessageBox({
+              title: "User",
+              message: `You are logged in as: ${jwt.upn}`,
             });
           },
         },
