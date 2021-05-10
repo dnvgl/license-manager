@@ -17,12 +17,16 @@ contextBridge.exposeInMainWorld("electron", {
         try {
           fs.mkdirSync(directory, { recursive: true });
         } catch (e) {
-          console.log(e);
+          console.log(`unable to create directory, ${e}`);
         }
       }
-      const loc = path.join(directory, filename);
 
-      fs.writeFileSync(loc, data);
+      try {
+        const loc = path.join(directory, filename);
+        fs.writeFileSync(loc, data);
+      } catch (e) {
+        console.log(`unable to write file, ${e}`);
+      }
     });
   },
 });
