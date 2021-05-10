@@ -31,6 +31,7 @@ module.exports = {
       externals: ["keytar"],
       builderOptions: {
         publish: ["github"],
+        productName: "DNV License Activator"
       },
     },
   },
