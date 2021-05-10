@@ -1,4 +1,10 @@
 module.exports = {
+  pages: {
+    index: {
+      entry: "src/main.js",
+      title: "License Activation",
+    },
+  },
   transpileDependencies: [
     "bootstrap-vue",
     "@dnvgl-onefoundation/onedesign-vue",

@@ -4,6 +4,11 @@
       You are not authorized. Are you online?
     </b-alert>
 
+    <b-alert :show="status === 'Offline'" variant="warning">
+      Unable to load licenses. Are you online?
+      <b-button @click="init">Retry</b-button>
+    </b-alert>
+
     <div v-if="status === 'Init'">
       Loading....
       <b-progress
@@ -26,12 +31,13 @@
       <b-button @click="next">Next</b-button>
     </div>
 
-    <div v-if="status === 'Loaded' && !availableLicenses.length">
-      <b-alert show variant="danger">
-        <h2>No available licenses found</h2>
-        <p>Please contact support.</p>
-      </b-alert>
-    </div>
+    <b-alert
+      :show="status === 'Loaded' && !availableLicenses.length"
+      variant="warning"
+    >
+      <h2>No available licenses found</h2>
+      <p>Please contact support.</p>
+    </b-alert>
 
     <div v-if="status === 'Generate'">
       <h1>Generate License</h1>
@@ -68,19 +74,15 @@
       ></b-progress>
     </div>
 
-    <div v-if="status === 'Success'">
-      <b-alert show variant="info">
-        <h2>License generated successfully</h2>
-        <p>Your license is now activated.</p>
-      </b-alert>
-    </div>
+    <b-alert :show="status === 'Success'" variant="info">
+      <h2>License generated successfully</h2>
+      <p>Your license is now activated.</p>
+    </b-alert>
 
-    <div v-if="status === 'Failed'">
-      <b-alert show variant="danger">
-        <h2>License generation failed</h2>
-        <p>Please contact support.</p>
-      </b-alert>
-    </div>
+    <b-alert :show="status === 'Failed'" variant="danger">
+      <h2>License generation failed</h2>
+      <p>Please contact support.</p>
+    </b-alert>
   </div>
 </template>
 
@@ -130,6 +132,39 @@ export default {
     },
   },
   methods: {
+    init() {
+      if (this.token === "Unauthorized") {
+        this.status = "Unauthorized";
+        return;
+      }
+
+      axios
+        .get(
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:3000/api/availableLicenses"
+            : "https://software-license-dev.dnvgl.com/api/availableLicenses",
+          {
+            headers: { Authorization: `Bearer ${this.token}` },
+          }
+        )
+        .then((al) => {
+          this.availableLicenses = al.data;
+          this.status = "Loaded";
+        })
+        .catch((e) => {
+          if (e.message === "Network Error") {
+            this.status = "Offline";
+          } else {
+            this.status = "Loaded";
+          }
+        });
+
+      const defaultOption = this.options.find(
+        (o) => o.value.mac == this.primaryMacAddress.mac
+      );
+
+      this.selected = defaultOption ? defaultOption.value : undefined;
+    },
     next() {
       this.status = "Generate";
     },
@@ -171,32 +206,7 @@ export default {
     },
   },
   mounted() {
-    axios
-      .get(
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:3000/api/availableLicenses"
-          : "https://software-license-dev.dnvgl.com/api/availableLicenses",
-        {
-          headers: { Authorization: `Bearer ${this.token}` },
-        }
-      )
-      .then((al) => {
-        this.availableLicenses = al.data;
-        this.status = "Loaded";
-      })
-      .catch(() => {
-        this.status = "Failed";
-      });
-
-    const defaultOption = this.options.find(
-      (o) => o.value.mac == this.primaryMacAddress.mac
-    );
-
-    this.selected = defaultOption ? defaultOption.value : undefined;
-
-    if (this.token === "Unauthorized") {
-      this.status = "Unauthorized";
-    }
+    this.init();
   },
 };
 </script>

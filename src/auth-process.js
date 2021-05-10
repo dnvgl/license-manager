@@ -1,4 +1,4 @@
-const { BrowserWindow } = require("electron");
+const { BrowserWindow, Menu, dialog, app } = require("electron");
 const authService = require("./auth-service");
 const { createAppWindow } = require("./app-process");
 
@@ -15,6 +15,36 @@ function createAuthWindow() {
       enableRemoteModule: false,
     },
   });
+
+  const template = [
+    {
+      label: "File",
+      submenu: [
+        {
+          label: "Exit",
+          click() {
+            win.close();
+          },
+        },
+      ],
+    },
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "About",
+          click() {
+            dialog.showMessageBox({
+              title: "About",
+              message: `You are running version : ${app.getVersion()}`,
+            });
+          },
+        },
+      ],
+    },
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 
   win.loadURL(authService.getAuthenticationURL());
 

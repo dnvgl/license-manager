@@ -1,4 +1,4 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, Menu, dialog, app } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
 
@@ -22,6 +22,36 @@ async function createAppWindow() {
       additionalArguments: [token],
     },
   });
+
+  const template = [
+    {
+      label: "File",
+      submenu: [
+        {
+          label: "Exit",
+          click() {
+            win.close();
+          },
+        },
+      ],
+    },
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "About",
+          click() {
+            dialog.showMessageBox({
+              title: "About",
+              message: `You are running version : ${app.getVersion()}`,
+            });
+          },
+        },
+      ],
+    },
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
