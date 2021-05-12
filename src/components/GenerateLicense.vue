@@ -265,6 +265,6 @@ export default {
 }
 
 .feedback-icon {
-  font-size: 7em;
+  font-size: 4em;
 }
 </style>
