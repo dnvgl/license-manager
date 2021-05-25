@@ -50,14 +50,14 @@ function createAuthWindow() {
 
   const contents = win.webContents;
 
-  contents.on("did-fail-load", () => {
+  contents.on("did-fail-load", (e) => {
+    //win.webContents.openDevTools();
     createAppWindow();
     destroyAuthWin();
   });
 
-  const {
-    session: { webRequest },
-  } = win.webContents;
+  const session = win.webContents.session;
+  const webRequest = session.webRequest;
 
   const filter = {
     urls: ["http://localhost/callback*"],

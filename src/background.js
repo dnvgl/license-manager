@@ -5,6 +5,9 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
+//override console
+Object.assign(console, logger.functions);
+
 import { createAppWindow } from "./app-process";
 import { createAuthWindow } from "./auth-process";
 import authService from "./auth-service";

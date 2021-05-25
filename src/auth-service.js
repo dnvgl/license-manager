@@ -1,9 +1,10 @@
-const axios = require("axios");
+const util = require("util");
 const url = require("url");
 const querystring = require("querystring");
 const randomstring = require("randomstring");
 const crypto = require("crypto");
 const base64url = require("base64url");
+const { net } = require("electron");
 const {
   getRefreshToken,
   setRefreshToken,
@@ -66,10 +67,40 @@ async function refreshTokens() {
     };
 
     try {
-      const response = await axios(refreshOptions);
+      const requestApi = {
+        method: refreshOptions.method,
+        headers: refreshOptions.headers,
+        url: refreshOptions.url,
+      };
 
-      accessToken = response.data.access_token;
+      const request = net.request(requestApi);
+
+      const refreshRequestPromise = new Promise((resolve, reject) => {
+        request.on("response", (response) => {
+          if (response.statusCode !== 200) {
+            reject(response.statusMessage);
+            return;
+          }
+
+          let body = "";
+
+          response.on("data", (chunk) => {
+            body += chunk;
+          });
+          response.on("end", () => {
+            const data = JSON.parse(body);
+            accessToken = data.access_token;
+            resolve();
+          });
+        });
+      });
+
+      request.end(refreshOptions.data);
+
+      await refreshRequestPromise;
     } catch (error) {
+      console.log(error);
+
       await logout();
       throw error;
     }
@@ -101,18 +132,46 @@ async function loadTokens(callbackURL) {
   };
 
   try {
-    const response = await axios(options);
+    const requestApi = {
+      method: options.method,
+      headers: options.headers,
+      url: options.url,
+    };
 
-    console.log(response.data);
+    const request = net.request(requestApi);
 
-    accessToken = response.data.access_token;
+    const tokenRequestPromise = new Promise((resolve, reject) => {
+      request.on("response", (response) => {
+        if (response.statusCode !== 200) {
+          reject(response.statusMessage);
+          return;
+        }
 
-    //profile = jwt_decode(response.data.id_token);
-    refreshToken = response.data.refresh_token;
+        let body = "";
+
+        response.on("data", (chunk) => {
+          body += chunk;
+        });
+        response.on("end", () => {
+          const data = JSON.parse(body);
+
+          accessToken = data.access_token;
+          refreshToken = data.refresh_token;
+
+          resolve();
+        });
+      });
+    });
+
+    request.end(options.data);
+
+    await tokenRequestPromise;
 
     if (refreshToken) {
       await setRefreshToken(refreshToken);
     }
+
+    console.log("authenticated");
   } catch (error) {
     console.error(error);
 

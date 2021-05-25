@@ -9,7 +9,7 @@
     <div align="center" v-if="status === 'Offline' || status === 'Design'">
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
       <p>Unable to load licenses. Are you online?</p>
-      <b-button class="mr-2" @click="init" variant="primary">Retry</b-button>
+      <b-button @click="init" class="mr-2" variant="primary">Retry</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
@@ -36,7 +36,7 @@
         {{ al.Product_Name2__c }}
       </p>
       <hr />
-      <b-button class="mr-2" variant="primary" @click="next">Next</b-button>
+      <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
@@ -75,10 +75,10 @@
         ></b-form-select>
       </b-form-group>
 
-      <b-button class="mr-2" variant="primary" @click="generate"
+      <b-button @click="generate" class="mr-2" variant="primary"
         >Activate</b-button
       >
-      <b-button variant="subtle" @click="cancel">Cancel</b-button>
+      <b-button @click="cancel" variant="subtle">Cancel</b-button>
     </div>
 
     <div v-if="status === 'Running' || status === 'Design'">
