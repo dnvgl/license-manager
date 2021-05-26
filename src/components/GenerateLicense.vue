@@ -32,9 +32,16 @@
     >
       <h1>Available licenses</h1>
       <hr />
-      <p :key="al.Id" v-for="al in availableLicenses">
-        {{ al.Product_Name2__c }}
-      </p>
+
+      <b-form-checkbox-group
+        v-model="selectedLicenses"
+        :options="availableLicenses"
+        :stacked="true"
+        class="mb-3"
+        value-field="opportunityId"
+        text-field="productInfo"
+      ></b-form-checkbox-group>
+
       <hr />
       <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
@@ -63,7 +70,7 @@
       use.
 
       <b-form-group
-        id="input-group-1"
+        id="macInputGroup"
         label="Your mac id:"
         label-for="macInput"
         description="We need your mac address to activate a license for your machine.  Usually you can use the default"
@@ -78,14 +85,14 @@
       <b-button @click="generate" class="mr-2" variant="primary"
         >Activate</b-button
       >
-      <b-button @click="cancel" variant="subtle">Cancel</b-button>
+      <b-button @click="close" variant="subtle">Cancel</b-button>
     </div>
 
     <div v-if="status === 'Running' || status === 'Design'">
       {{ message }}
 
       <b-progress
-        :value="100"
+        :value="value"
         :striped="true"
         :animated="true"
         v-show="true"
@@ -130,6 +137,8 @@ export default {
       selected: undefined,
       message: "",
       availableLicenses: [],
+      selectedLicenses: [],
+      value: 0,
     };
   },
   computed: {
@@ -189,7 +198,7 @@ export default {
           if (this.status === "Design") {
             this.message = "Activating license ...";
             this.availableLicenses = [
-              { Id: "test", Product_Name2__c: "Test product" },
+              { opportunityId: "test", productInfo: "Test product" },
             ];
           }
         })
@@ -220,25 +229,37 @@ export default {
           Buffer.from(payloadBase64, "base64").toString("utf8")
         ); // Base64-decode and get the JSON payload
 
-        const license = await axios.post(
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:3000/api/generateLicense"
-            : "https://software-license-dev.dnvgl.com/api/generateLicense",
-          {
-            hostId: this.primaryMac,
-            fedId: jwt.userId,
-          },
-          {
-            headers: { Authorization: `Bearer ${this.token}` },
-          }
-        );
+        for (let i = 0; i < this.selectedLicenses.length; i++) {
+          const selectedLicense = this.selectedLicenses[i];
 
-        const contentDisposition = license.headers["content-disposition"];
-        const filename = contentDisposition.substring(
-          contentDisposition.indexOf("=") + 1
-        );
+          this.message = `Activating license for ${
+            this.availableLicenses.find(
+              (a) => a.opportunityId === selectedLicense
+            ).productInfo
+          } using mac address ${this.selected.mac}...`;
 
-        window.electron.writeLicenseFile(filename, license.data);
+          this.value = ((i + 1) / this.selectedLicenses.length) * 100;
+
+          const license = await axios.post(
+            process.env.NODE_ENV === "development"
+              ? `http://localhost:3000/api/generateLicense/${selectedLicense}`
+              : `https://software-license-dev.dnvgl.com/api/generateLicense/${selectedLicense}`,
+            {
+              hostId: this.primaryMac,
+              fedId: jwt.userId,
+            },
+            {
+              headers: { Authorization: `Bearer ${this.token}` },
+            }
+          );
+
+          const contentDisposition = license.headers["content-disposition"];
+          const filename = contentDisposition.substring(
+            contentDisposition.indexOf("=") + 1
+          );
+
+          window.electron.writeLicenseFile(filename, license.data);
+        }
 
         this.setStatus("Success");
       } catch (e) {
