@@ -34,13 +34,25 @@
       <hr />
 
       <b-form-checkbox-group
+        id="selectedLicenses"
         v-model="selectedLicenses"
-        :options="availableLicenses"
-        :stacked="true"
         class="mb-3"
-        value-field="opportunityId"
-        text-field="productInfo"
-      ></b-form-checkbox-group>
+        stacked
+      >
+        <b-row
+          v-for="availableLicense in availableLicenses"
+          :key="availableLicense.opportunityId"
+        >
+          <b-col cols="8">
+            <b-form-checkbox :value="availableLicense.opportunityId">
+              {{ availableLicense.productInfo }}
+            </b-form-checkbox>
+          </b-col>
+          <b-col class="text-right"
+            >Expires {{ availableLicense.expires }}
+          </b-col>
+        </b-row>
+      </b-form-checkbox-group>
 
       <hr />
       <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
@@ -194,13 +206,6 @@ export default {
         .then((al) => {
           this.availableLicenses = al.data;
           this.setStatus("Loaded");
-
-          if (this.status === "Design") {
-            this.message = "Activating license ...";
-            this.availableLicenses = [
-              { opportunityId: "test", productInfo: "Test product" },
-            ];
-          }
         })
         .catch((e) => {
           if (e.message === "Network Error") {
@@ -215,6 +220,22 @@ export default {
       );
 
       this.selected = defaultOption ? defaultOption.value : undefined;
+
+      if (this.status === "Design") {
+        this.message = "Activating license ...";
+        this.availableLicenses = [
+          {
+            opportunityId: "1",
+            productInfo: "product 1, product 2, product 3, product 4",
+            expires: "2020-10-10",
+          },
+          {
+            opportunityId: "2",
+            productInfo: "product 5",
+            expires: "2020-10-10",
+          },
+        ];
+      }
     },
     next() {
       this.setStatus("Generate");
