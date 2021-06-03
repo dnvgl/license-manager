@@ -22,6 +22,19 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
+app.on("login", (event, webContents, details, authInfo, callback) => {
+  console.log("login triggered: ");
+  console.log(authInfo);
+
+  event.preventDefault();
+
+  if (process.env.username && process.env.password) {
+    callback(process.env.username, process.env.password);
+  } else {
+    callback();
+  }
+});
+
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar

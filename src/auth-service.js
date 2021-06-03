@@ -87,6 +87,7 @@ async function refreshTokens() {
           response.on("data", (chunk) => {
             body += chunk;
           });
+
           response.on("end", () => {
             const data = JSON.parse(body);
             accessToken = data.access_token;
