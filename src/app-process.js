@@ -1,15 +1,16 @@
-import { BrowserWindow, Menu, dialog, app } from "electron";
+import { BrowserWindow, Menu, dialog, app, shell } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
+import logger from "electron-log";
 
 import authService from "./auth-service";
 
 let win = null;
 
-async function createAppWindow() {
+async function createAppWindow(error) {
   // Create the browser window.
 
-  const token = authService.getAccessToken();
+  const token = error || authService.getAccessToken();
 
   win = new BrowserWindow({
     width: 800,
@@ -75,6 +76,12 @@ async function createAppWindow() {
               title: "User",
               message: `You are logged in as: ${jwt.upn}`,
             });
+          },
+        },
+        {
+          label: "Log",
+          click() {
+            shell.openPath(logger.transports.file.getFile().path);
           },
         },
       ],

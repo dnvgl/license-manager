@@ -1,6 +1,6 @@
 <template>
   <b-container id="app">
-    <generate-license class="pt-2" :mac-addresses="macAddress" />
+    <generate-license class="p-4" :mac-addresses="macAddress" />
   </b-container>
 </template>
 

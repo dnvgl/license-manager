@@ -31,7 +31,7 @@ app.on("login", (event, webContents, details, authInfo, callback) => {
   if (process.env.username && process.env.password) {
     callback(process.env.username, process.env.password);
   } else {
-    callback();
+    createAppWindow("ProxyAuthError");
   }
 });
 
@@ -69,6 +69,7 @@ app.on("ready", async () => {
     await authService.refreshTokens();
     createAppWindow();
   } catch (err) {
+    console.log(err);
     createAuthWindow();
   }
 });

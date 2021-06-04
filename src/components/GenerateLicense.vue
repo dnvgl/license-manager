@@ -6,6 +6,18 @@
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
 
+    <div
+      align="center"
+      v-if="status === 'ProxyAuthError' || status === 'Design'"
+    >
+      <i class="fas fa-wrench feedback-icon fail" aria-hidden="true"></i>
+      <p>
+        You are not authorized. Do you have an internet proxy that requires
+        authentication?
+      </p>
+      <b-button @click="close" variant="primary">Close</b-button>
+    </div>
+
     <div align="center" v-if="status === 'Offline' || status === 'Design'">
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
       <p>Unable to load licenses. Are you online?</p>
@@ -43,18 +55,19 @@
           v-for="availableLicense in availableLicenses"
           :key="availableLicense.opportunityId"
         >
-          <b-col cols="8">
+          <b-col>
             <b-form-checkbox :value="availableLicense.opportunityId">
               {{ availableLicense.productInfo }}
             </b-form-checkbox>
+            <hr />
           </b-col>
-          <b-col class="text-right"
+
+          <!--b-col class="text-right"
             >Expires {{ availableLicense.expires }}
-          </b-col>
+          </b-col-->
         </b-row>
       </b-form-checkbox-group>
 
-      <hr />
       <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
     </div>
@@ -194,6 +207,11 @@ export default {
         return;
       }
 
+      if (this.token === "ProxyAuthError") {
+        this.status = "ProxyAuthError";
+        return;
+      }
+
       axios
         .get(
           process.env.NODE_ENV === "development"
@@ -208,6 +226,7 @@ export default {
           this.setStatus("Loaded");
         })
         .catch((e) => {
+          console.log(e);
           if (e.message === "Network Error") {
             this.setStatus("Offline");
           } else {
@@ -285,6 +304,7 @@ export default {
         this.setStatus("Success");
       } catch (e) {
         console.log("not able to load licenses");
+        console.log(e);
         this.setStatus("Failed");
       }
     },
