@@ -4,6 +4,8 @@ config.json
 .npmrc
 setenv.ps1
 
+build/
+
 # Logs
 logs
 *.log
