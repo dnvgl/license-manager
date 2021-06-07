@@ -100,7 +100,6 @@ async function createAppWindow(error) {
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
-    autoUpdater.checkForUpdatesAndNotify();
     if (process.env.DEVTOOLS) {
       win.webContents.openDevTools();
     }

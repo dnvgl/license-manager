@@ -17,6 +17,10 @@ autoUpdater.logger.transports.file.level = "info";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
+if (!isDevelopment) {
+  autoUpdater.checkForUpdatesAndNotify();
+}
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
