@@ -82,7 +82,7 @@
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
       <h1>No available licenses found</h1>
       <p>
-        If you expected to see a license here please contact
+        If you expected to see a license here, please contact
         software.support@dnv.com
       </p>
       <b-button @click="close" variant="primary">Close</b-button>
@@ -91,14 +91,13 @@
     <div v-if="status === 'Generate' || status === 'Design'">
       <h1>Activate License</h1>
 
-      Once you click 'Activate' the license will be activated and available for
-      use.
+      Once you click 'Activate', the license will be available for use.
 
       <b-form-group
         id="macInputGroup"
-        label="Your mac id:"
+        label="Your MAC ID:"
         label-for="macInput"
-        description="We need your mac address to activate a license for your machine.  Usually you can use the default"
+        description="The MAC ID is used to lock the license to this machine.  Usually you can use the default MAC ID."
       >
         <b-form-select
           id="macInput"
@@ -131,8 +130,8 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License activated successfully</h1>
-      <p>Your license is now activated</p>
+      <h1>License Activated successfully</h1>
+      <p>Your license is now activated and ready for use on this machine.</p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
 
@@ -262,7 +261,7 @@ export default {
     async generate() {
       try {
         this.setStatus("Running");
-        this.message = `Activating license using mac address ${this.selected.mac}...`;
+        this.message = `Activating license using MAC ID ${this.selected.mac}...`;
 
         const payloadBase64 = this.token.split(".")[1]; // the payload is the second dot-separated component of the JWT
         const jwt = JSON.parse(
