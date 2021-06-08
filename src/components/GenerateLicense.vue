@@ -12,8 +12,7 @@
     >
       <i class="fas fa-wrench feedback-icon fail" aria-hidden="true"></i>
       <p>
-        You are not authorized. Do you have an internet proxy that requires
-        authentication?
+        Sign in failed due to restrictions from your firewall.
       </p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
@@ -131,7 +130,10 @@
         aria-hidden="true"
       ></i>
       <h1>License Activated successfully</h1>
-      <p>Your license is now activated and ready for use on this machine.</p>
+      <p>
+        A copy of your activated license has been saved to c:\flexlm. Your
+        license is now activated and ready for use on this machine.
+      </p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
 
