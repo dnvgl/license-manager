@@ -10,7 +10,7 @@
       align="center"
       v-if="status === 'ProxyAuthError' || status === 'Design'"
     >
-      <i class="fal fa-wrench feedback-icon fail" aria-hidden="true"></i>
+      <i class="fal fa-shield-check feedback-icon fail" aria-hidden="true"></i>
       <p>
         Sign in failed due to restrictions from your firewall
       </p>
