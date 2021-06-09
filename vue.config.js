@@ -2,7 +2,7 @@ module.exports = {
   pages: {
     index: {
       entry: "src/main.js",
-      title: "License Activation",
+      title: "License Activation Tool",
     },
   },
   transpileDependencies: [
@@ -31,7 +31,7 @@ module.exports = {
       externals: ["keytar"],
       builderOptions: {
         publish: ["github"],
-        productName: "DNV License Activator"
+        productName: "License Activation Tool",
       },
     },
   },

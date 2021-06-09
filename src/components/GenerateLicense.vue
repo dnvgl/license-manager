@@ -10,9 +10,9 @@
       align="center"
       v-if="status === 'ProxyAuthError' || status === 'Design'"
     >
-      <i class="fas fa-wrench feedback-icon fail" aria-hidden="true"></i>
+      <i class="fal fa-wrench feedback-icon fail" aria-hidden="true"></i>
       <p>
-        Sign in failed due to restrictions from your firewall.
+        Sign in failed due to restrictions from your firewall
       </p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
@@ -90,13 +90,13 @@
     <div v-if="status === 'Generate' || status === 'Design'">
       <h1>Activate License</h1>
 
-      Once you click 'Activate', the license will be available for use.
+      Once you click Activate, the license will be available for use
 
       <b-form-group
         id="macInputGroup"
         label="Your MAC ID:"
         label-for="macInput"
-        description="The MAC ID is used to lock the license to this machine.  Usually you can use the default MAC ID."
+        description="The MAC ID is used to lock the license to this machine.  Usually you can use the default MAC ID"
       >
         <b-form-select
           id="macInput"
@@ -131,8 +131,8 @@
       ></i>
       <h1>License Activated successfully</h1>
       <p>
-        A copy of your activated license has been saved to c:\flexlm. Your
-        license is now activated and ready for use on this machine.
+        Your license is now activated and ready for use on this machine. A copy
+        of your activated license has been saved to c:\flexlm
       </p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
