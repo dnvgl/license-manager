@@ -81,10 +81,12 @@
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
       <h1>No available licenses found</h1>
       <p>
-        If you expected to see a license here, please contact
+        If you don't see any license here, please wait a few minutes and
+        refresh. If you still don't see any licenses please contact
         software.support@dnv.com
       </p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="init" class="mr-2" variant="primary">Refresh</b-button>
+      <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
     <div v-if="status === 'Generate' || status === 'Design'">
@@ -223,8 +225,10 @@ export default {
           }
         )
         .then((al) => {
-          this.availableLicenses = al.data;
-          this.setStatus("Loaded");
+          if (this.status !== "Design") {
+            this.availableLicenses = al.data;
+            this.setStatus("Loaded");
+          }
         })
         .catch((e) => {
           console.log(e);
