@@ -92,3 +92,7 @@ if (isDevelopment) {
     });
   }
 }
+
+process.on("uncaughtException", (err) => {
+  createAppWindow();
+});
