@@ -90,7 +90,7 @@
     </div>
 
     <div v-if="status === 'Generate' || status === 'Design'">
-      <h1>Activate License</h1>
+      <h1>Activate license</h1>
 
       Once you click Activate, the license will be available for use
 
@@ -131,7 +131,7 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License Activated successfully</h1>
+      <h1>License activated successfully</h1>
       <p>
         Your license is now activated and ready for use on this machine. A copy
         of your activated license has been saved to c:\flexlm
