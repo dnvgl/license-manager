@@ -11,6 +11,7 @@
       v-if="status === 'ProxyAuthError' || status === 'Design'"
     >
       <i class="fal fa-shield-check feedback-icon fail" aria-hidden="true"></i>
+      <h1>No internet connection</h1>
       <p>
         Sign in failed due to restrictions from your firewall
       </p>
@@ -19,6 +20,7 @@
 
     <div align="center" v-if="status === 'Offline' || status === 'Design'">
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
+      <h1>No internet connection</h1>
       <p>Unable to load licenses. Are you online?</p>
       <b-button @click="init" class="mr-2" variant="primary">Retry</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
