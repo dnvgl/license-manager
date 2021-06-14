@@ -110,7 +110,7 @@
       <b-button @click="generate" class="mr-2" variant="primary"
         >Activate</b-button
       >
-      <b-button @click="close" variant="subtle">Cancel</b-button>
+      <b-button @click="back" variant="subtle">Cancel</b-button>
     </div>
 
     <div v-if="status === 'Running' || status === 'Design'">
@@ -263,6 +263,9 @@ export default {
     },
     next() {
       this.setStatus("Generate");
+    },
+    back() {
+      this.setStatus("Loaded");
     },
     async generate() {
       try {
