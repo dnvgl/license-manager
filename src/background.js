@@ -94,5 +94,6 @@ if (isDevelopment) {
 }
 
 process.on("uncaughtException", (err) => {
+  console.log(err);
   createAppWindow();
 });
