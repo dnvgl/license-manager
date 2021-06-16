@@ -208,14 +208,18 @@ export default {
     },
     init() {
       if (this.token === "Unauthorized") {
+        window.electron.log("unauthorized");
         this.status = "Unauthorized";
         return;
       }
 
       if (this.token === "ProxyAuthError") {
+        window.electron.log("proxyautherror");
         this.status = "ProxyAuthError";
         return;
       }
+
+      window.electron.log("loading licenses");
 
       axios
         .get(
@@ -233,7 +237,7 @@ export default {
           }
         })
         .catch((e) => {
-          console.log(e);
+          window.electron.log(e);
           if (e.message === "Network Error") {
             this.setStatus("Offline");
           } else {
@@ -271,6 +275,8 @@ export default {
     },
     async generate() {
       try {
+        window.electron.log(`activating licenses for ${this.selected.mac}`);
+
         this.setStatus("Running");
         this.message = `Activating license using MAC ID ${this.selected.mac}...`;
 
@@ -287,6 +293,8 @@ export default {
               (a) => a.opportunityId === selectedLicense
             ).productInfo
           } using mac address ${this.selected.mac}...`;
+
+          window.electron.log(this.message);
 
           this.value = ((i + 1) / this.selectedLicenses.length) * 100;
 
@@ -313,8 +321,8 @@ export default {
 
         this.setStatus("Success");
       } catch (e) {
-        console.log("not able to load licenses");
-        console.log(e);
+        window.electron.log("not able to load licenses");
+        window.electron.log(e);
         this.setStatus("Failed");
       }
     },
