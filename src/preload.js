@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld("electron", {
   getMacAddress: () => os.networkInterfaces(),
   getToken: () => window.process.argv.slice(-1)[0],
   log: logger.log,
+  error: logger.error,
   writeLicenseFile: (filename, data) => {
     let directories = getLicenseFileDirectories(
       process.env.DNVSLM_LICENSE_FILE

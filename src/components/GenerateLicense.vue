@@ -2,6 +2,7 @@
   <div class="pt-5">
     <div align="center" v-if="status === 'Unauthorized' || status === 'Design'">
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
+      <h1>No internet connection?</h1>
       <p>You are not authorized. Are you online?</p>
       <b-button @click="close" variant="primary">Close</b-button>
     </div>
@@ -237,12 +238,12 @@ export default {
           }
         })
         .catch((e) => {
-          window.electron.log(e);
           if (e.message === "Network Error") {
             this.setStatus("Offline");
           } else {
             this.setStatus("Loaded");
           }
+          window.electron.error(e);
         });
 
       const defaultOption = this.options.find(
@@ -298,18 +299,28 @@ export default {
 
           this.value = ((i + 1) / this.selectedLicenses.length) * 100;
 
-          const license = await axios.post(
-            process.env.NODE_ENV === "development"
-              ? `http://localhost:3000/api/generateLicense/${selectedLicense}`
-              : `https://software-license-dev.dnvgl.com/api/generateLicense/${selectedLicense}`,
-            {
-              hostId: this.primaryMac,
-              fedId: jwt.userId,
-            },
-            {
-              headers: { Authorization: `Bearer ${this.token}` },
-            }
-          );
+          const license = await axios
+            .post(
+              process.env.NODE_ENV === "development"
+                ? `http://localhost:3000/api/generateLicense/${selectedLicense}`
+                : `https://software-license-dev.dnvgl.com/api/generateLicense/${selectedLicense}`,
+              {
+                hostId: this.primaryMac,
+                fedId: jwt.userId,
+              },
+              {
+                headers: { Authorization: `Bearer ${this.token}` },
+              }
+            )
+            .catch((e) => {
+              if (e.message === "Network Error") {
+                this.setStatus("Offline");
+              } else {
+                this.setStatus("Failed");
+              }
+              window.electron.error("not able to generate license");
+              window.electron.error(e);
+            });
 
           const contentDisposition = license.headers["content-disposition"];
           const filename = contentDisposition.substring(
@@ -321,9 +332,9 @@ export default {
 
         this.setStatus("Success");
       } catch (e) {
-        window.electron.log("not able to load licenses");
-        window.electron.log(e);
         this.setStatus("Failed");
+        window.electron.error("not able to generate license");
+        window.electron.error(e);
       }
     },
     close() {
