@@ -24,7 +24,15 @@ contextBridge.exposeInMainWorld("electron", {
       }
 
       try {
-        const loc = path.join(directory, filename);
+        const ext = path.extname(filename);
+        const basename = path.basename(filename, ext);
+        let loc = path.join(directory, `${basename}${ext}`);
+
+        let i = 0;
+        while (fs.existsSync(loc)) {
+          loc = path.join(directory, `${basename}.${++i}${ext}`);
+        }
+
         fs.writeFileSync(loc, data);
       } catch (e) {
         logger.log(`unable to write file, ${e}`);
