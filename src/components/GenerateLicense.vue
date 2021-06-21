@@ -71,7 +71,74 @@
       </b-form-checkbox-group>
 
       <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
-      <b-button @click="close" variant="subtle">Close</b-button>
+      <b-button @click="close" class="mr-2" variant="subtle">Close</b-button>
+      <b-button @click="() => this.setStatus('Transfer')" variant="subtle"
+        >Transfer</b-button
+      >
+    </div>
+
+    <div
+      v-if="
+        (status === 'Transfer' && availableLicenses.length) ||
+          status === 'Design'
+      "
+    >
+      <h1>Transfer licenses</h1>
+      <hr />
+
+      <b-form-checkbox-group
+        id="selectedLicenses"
+        v-model="selectedLicenses"
+        class="mb-1"
+        stacked
+      >
+        <b-row
+          v-for="availableLicense in availableLicenses"
+          :key="availableLicense.opportunityId"
+        >
+          <b-col>
+            <b-form-checkbox :value="availableLicense.opportunityId">
+              {{ availableLicense.productInfo }}
+            </b-form-checkbox>
+            <hr />
+          </b-col>
+
+          <!--b-col class="text-right"
+            >Expires {{ availableLicense.expires }}
+          </b-col-->
+        </b-row>
+      </b-form-checkbox-group>
+
+      <b-row class="mb-3">
+        <b-col sm="2">
+          <label for="input-email">email:</label>
+        </b-col>
+        <b-col sm="10">
+          <b-form-input
+            id="input-email"
+            placeholder="Enter the email of the person to transfer the license to"
+            v-model="transfereeEmail"
+          ></b-form-input>
+        </b-col>
+      </b-row>
+
+      <b-button @click="transfer" class="mr-2" variant="primary"
+        >Transfer</b-button
+      >
+      <b-button @click="back" variant="subtle">Back</b-button>
+    </div>
+
+    <div v-if="status === 'Transferring' || status === 'Design'">
+      Transferring license
+
+      <b-progress
+        :value="100"
+        :striped="true"
+        :animated="true"
+        v-show="true"
+        variant="primary"
+        class="mt-2"
+      ></b-progress>
     </div>
 
     <div
@@ -170,6 +237,7 @@ export default {
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
+      transfereeEmail: "",
     };
   },
   computed: {
@@ -208,6 +276,8 @@ export default {
       }
     },
     init() {
+      this.setStatus("Init");
+
       if (this.token === "Unauthorized") {
         window.electron.log("unauthorized");
         this.status = "Unauthorized";
@@ -270,6 +340,43 @@ export default {
     },
     next() {
       this.setStatus("Generate");
+    },
+    async transfer() {
+      this.setStatus("Transferring");
+
+      const payloadBase64 = this.token.split(".")[1]; // the payload is the second dot-separated component of the JWT
+      const jwt = JSON.parse(
+        Buffer.from(payloadBase64, "base64").toString("utf8")
+      ); // Base64-decode and get the JSON payload
+
+      for (let i = 0; i < this.selectedLicenses.length; i++) {
+        const selectedLicense = this.selectedLicenses[i];
+
+        await axios
+          .post(
+            process.env.NODE_ENV === "development"
+              ? `http://localhost:3000/api/transferLicense/${selectedLicense}`
+              : `https://software-license-dev.dnvgl.com/api/transferLicense/${selectedLicense}`,
+            {
+              newLicenseeEmail: this.transfereeEmail,
+              fedId: jwt.userId,
+            },
+            {
+              headers: { Authorization: `Bearer ${this.token}` },
+            }
+          )
+          .catch((e) => {
+            if (e.message === "Network Error") {
+              this.setStatus("Offline");
+            } else {
+              this.setStatus("Failed");
+            }
+            window.electron.error("not able to transfer license");
+            window.electron.error(e);
+          });
+      }
+
+      this.init();
     },
     back() {
       this.setStatus("Loaded");
