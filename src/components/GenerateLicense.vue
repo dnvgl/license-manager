@@ -70,10 +70,16 @@
         </b-row>
       </b-form-checkbox-group>
 
-      <b-button @click="next" class="mr-2" variant="primary">Next</b-button>
+      <b-button
+        @click="next"
+        class="mr-2"
+        variant="primary"
+        :disabled="!selectedLicenses.length"
+        >Next</b-button
+      >
       <b-button @click="close" class="mr-2" variant="subtle">Close</b-button>
       <b-button @click="() => this.setStatus('Transfer')" variant="subtle"
-        >Transfer</b-button
+        >Reassign</b-button
       >
     </div>
 
@@ -83,7 +89,7 @@
           status === 'Design'
       "
     >
-      <h1>Transfer licenses</h1>
+      <h1>Reassign licenses</h1>
       <hr />
 
       <b-form-checkbox-group
@@ -109,27 +115,35 @@
         </b-row>
       </b-form-checkbox-group>
 
-      <b-row class="mb-3">
-        <b-col sm="2">
-          <label for="input-email">email:</label>
-        </b-col>
-        <b-col sm="10">
+      <b-form class="mb-3" @submit="transfer" :novalidate="true">
+        <b-form-group label="Email:" label-for="input-email">
           <b-form-input
             id="input-email"
-            placeholder="Enter the email of the person to transfer the license to"
+            placeholder="Enter the email of the person to reassign the license to"
             v-model="transfereeEmail"
+            :state="emailValidation"
           ></b-form-input>
-        </b-col>
-      </b-row>
+          <b-form-invalid-feedback :state="emailValidation">
+            This email looks invalid
+          </b-form-invalid-feedback>
+          <b-form-valid-feedback :state="emailValidation">
+            This email looks good
+          </b-form-valid-feedback>
+        </b-form-group>
+      </b-form>
 
-      <b-button @click="transfer" class="mr-2" variant="primary"
-        >Transfer</b-button
+      <b-button
+        type="submit"
+        class="mr-2"
+        variant="primary"
+        :disabled="!emailValidation || !selectedLicenses.length"
+        >Reassign</b-button
       >
       <b-button @click="back" variant="subtle">Back</b-button>
     </div>
 
     <div v-if="status === 'Transferring' || status === 'Design'">
-      Transferring license
+      Reassigning license
 
       <b-progress
         :value="100"
@@ -139,6 +153,20 @@
         variant="primary"
         class="mt-2"
       ></b-progress>
+    </div>
+
+    <div align="center" v-if="status === 'Transferred' || status === 'Design'">
+      <i
+        class="fal fa-check-circle feedback-icon success"
+        aria-hidden="true"
+      ></i>
+      <h1>License reassigned successfully</h1>
+      <p>
+        An email will be sent to {{ transfereeEmail }} to notify about the
+        reassingment of the license
+      </p>
+      <b-button @click="back" variant="primary">Back</b-button>
+      <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
     <div
@@ -247,6 +275,14 @@ export default {
     primaryMac() {
       return this.primaryMacAddress.mac.replace(/:/g, "");
     },
+    emailValidation() {
+      if (!this.transfereeEmail.length) {
+        return null;
+      }
+
+      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      return emailFormat.test(this.transfereeEmail.toLowerCase());
+    },
     options() {
       let def = true;
       const result = [];
@@ -275,8 +311,9 @@ export default {
         this.status = status;
       }
     },
-    init() {
+    init(load) {
       this.setStatus("Init");
+      this.selectedLicenses = [];
 
       if (this.token === "Unauthorized") {
         window.electron.log("unauthorized");
@@ -292,29 +329,33 @@ export default {
 
       window.electron.log("loading licenses");
 
-      axios
-        .get(
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:3000/api/availableLicenses"
-            : "https://software-license-dev.dnvgl.com/api/availableLicenses",
-          {
-            headers: { Authorization: `Bearer ${this.token}` },
-          }
-        )
-        .then((al) => {
-          if (this.status !== "Design") {
-            this.availableLicenses = al.data;
-            this.setStatus("Loaded");
-          }
-        })
-        .catch((e) => {
-          if (e.message === "Network Error") {
-            this.setStatus("Offline");
-          } else {
-            this.setStatus("Loaded");
-          }
-          window.electron.error(e);
-        });
+      if (load) {
+        axios
+          .get(
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:3000/api/availableLicenses"
+              : "https://software-license-dev.dnvgl.com/api/availableLicenses",
+            {
+              headers: { Authorization: `Bearer ${this.token}` },
+            }
+          )
+          .then((al) => {
+            if (this.status !== "Design") {
+              this.availableLicenses = al.data;
+              this.setStatus("Loaded");
+            }
+          })
+          .catch((e) => {
+            if (e.message === "Network Error") {
+              this.setStatus("Offline");
+            } else {
+              this.setStatus("Loaded");
+            }
+            window.electron.error(e);
+          });
+      } else {
+        this.setStatus("Loaded");
+      }
 
       const defaultOption = this.options.find(
         (o) => o.value.mac == this.primaryMacAddress.mac
@@ -376,10 +417,10 @@ export default {
           });
       }
 
-      this.init();
+      this.setStatus("Transferred");
     },
     back() {
-      this.setStatus("Loaded");
+      this.init(false);
     },
     async generate() {
       try {
