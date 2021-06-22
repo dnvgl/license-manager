@@ -23,7 +23,9 @@
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
       <h1>No internet connection</h1>
       <p>Unable to load licenses. Are you online?</p>
-      <b-button @click="init" class="mr-2" variant="primary">Retry</b-button>
+      <b-button @click="init(true)" class="mr-2" variant="primary"
+        >Retry</b-button
+      >
       <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
@@ -122,6 +124,7 @@
             placeholder="Enter the email of the person to reassign the license to"
             v-model="transfereeEmail"
             :state="emailValidation"
+            required
           ></b-form-input>
           <b-form-invalid-feedback :state="emailValidation">
             This email looks invalid
@@ -183,7 +186,9 @@
         refresh. If you still don't see any licenses please contact
         software.support@dnv.com
       </p>
-      <b-button @click="init" class="mr-2" variant="primary">Refresh</b-button>
+      <b-button @click="init(true)" class="mr-2" variant="primary"
+        >Refresh</b-button
+      >
       <b-button @click="close" variant="subtle">Close</b-button>
     </div>
 
@@ -490,7 +495,7 @@ export default {
     },
   },
   mounted() {
-    this.init();
+    this.init(true);
   },
 };
 </script>
