@@ -105,10 +105,14 @@
       <div class="p-2" style="background-color:#ccecf8;">
         <div
           class="p-1"
-          v-for="availableLicense in availableLicenses"
-          :key="availableLicense.opportunityId"
+          v-for="selectedLicense in selectedLicenses"
+          :key="selectedLicense"
         >
-          {{ availableLicense.productInfo }}
+          {{
+            availableLicenses.filter(
+              (a) => a.opportunityId === selectedLicense
+            )[0].productInfo
+          }}
         </div>
       </div>
       <b-form class="mb-3" :novalidate="true">
@@ -437,7 +441,7 @@ export default {
             } else {
               this.setStatus("TransferFailed");
               this.transferFailedMessage =
-                "Reassignment failed for unknow reasons, please contact software.support@dnv.com";
+                "Reassignment failed for unknown reasons, please contact software.support@dnv.com";
             }
 
             if (e.status === 409) {

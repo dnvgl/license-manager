@@ -8,8 +8,8 @@ const { getLicenseFileDirectories } = require("../src/license-file");
 contextBridge.exposeInMainWorld("electron", {
   getMacAddress: () => os.networkInterfaces(),
   getToken: () => window.process.argv.slice(-1)[0],
-  log: logger.log,
-  error: logger.error,
+  log: (m) => logger.log(m),
+  error: (m) => logger.error(m),
   writeLicenseFile: (filename, data) => {
     let directories = getLicenseFileDirectories(
       process.env.DNVSLM_LICENSE_FILE
