@@ -1,10 +1,10 @@
 <template>
-  <div class="pt-5">
+  <div class="p-6">
     <div align="center" v-if="status === 'Unauthorized' || status === 'Design'">
       <i class="fal fa-wifi-slash feedback-icon fail" aria-hidden="true"></i>
       <h1>No internet connection?</h1>
       <p>You are not authorized. Are you online?</p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div
@@ -16,7 +16,7 @@
       <p>
         Sign in failed due to restrictions from your firewall
       </p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div align="center" v-if="status === 'Offline' || status === 'Design'">
@@ -26,7 +26,7 @@
       <b-button @click="init(true)" class="mr-2" variant="primary"
         >Retry</b-button
       >
-      <b-button @click="close" variant="subtle">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div v-if="status === 'Init' || status === 'Design'">
@@ -47,6 +47,10 @@
       "
     >
       <h1>Available licenses</h1>
+      Select one or more licenses to
+      <span class="avenir-medium">Activate</span> on this computer or
+      <span class="avenir-medium">Reassign</span>
+      to a single user on a different computer.
       <hr />
 
       <b-form-checkbox-group
@@ -77,11 +81,16 @@
         class="mr-2"
         variant="primary"
         :disabled="!selectedLicenses.length"
-        >Next</b-button
+        >Activate</b-button
       >
-      <b-button @click="close" class="mr-2" variant="subtle">Close</b-button>
-      <b-button @click="() => this.setStatus('Transfer')" variant="subtle"
+      <b-button
+        class="mr-2"
+        @click="() => this.setStatus('Transfer')"
+        variant="secondary"
         >Reassign</b-button
+      >
+      <b-button @click="close" style="float:right;" variant="subtle"
+        >Exit</b-button
       >
     </div>
 
@@ -92,31 +101,16 @@
       "
     >
       <h1>Reassign licenses</h1>
-      <hr />
-
-      <b-form-checkbox-group
-        id="selectedLicenses"
-        v-model="selectedLicenses"
-        class="mb-1"
-        stacked
-      >
-        <b-row
+      <p>The following licenses will be reassigned:</p>
+      <div class="p-2" style="background-color:#ccecf8;">
+        <div
+          class="p-1"
           v-for="availableLicense in availableLicenses"
           :key="availableLicense.opportunityId"
         >
-          <b-col>
-            <b-form-checkbox :value="availableLicense.opportunityId">
-              {{ availableLicense.productInfo }}
-            </b-form-checkbox>
-            <hr />
-          </b-col>
-
-          <!--b-col class="text-right"
-            >Expires {{ availableLicense.expires }}
-          </b-col-->
-        </b-row>
-      </b-form-checkbox-group>
-
+          {{ availableLicense.productInfo }}
+        </div>
+      </div>
       <b-form class="mb-3" :novalidate="true">
         <b-form-group label="Email:" label-for="input-email">
           <b-form-input
@@ -142,7 +136,7 @@
         :disabled="!emailValidation || !selectedLicenses.length"
         >Reassign</b-button
       >
-      <b-button @click="back" variant="subtle">Back</b-button>
+      <b-button @click="back" variant="subtle">Cancel</b-button>
     </div>
 
     <div v-if="status === 'Transferring' || status === 'Design'">
@@ -168,8 +162,14 @@
         An email will be sent to {{ transfereeEmail }} to notify about the
         reassingment of the license
       </p>
-      <b-button @click="back" class="mr-2" variant="primary">Back</b-button>
-      <b-button @click="close" variant="subtle">Close</b-button>
+      <b-button
+        v-show="hasLicensesLeft"
+        @click="back"
+        class="mr-2"
+        variant="primary"
+        >Licenses</b-button
+      >
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div
@@ -182,7 +182,7 @@
       ></i>
       <h1>{{ transferFailedMessage }}</h1>
       <p>Please contact software.support@dnv.com</p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div
@@ -202,7 +202,7 @@
       <b-button @click="init(true)" class="mr-2" variant="primary"
         >Refresh</b-button
       >
-      <b-button @click="close" variant="subtle">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div v-if="status === 'Generate' || status === 'Design'">
@@ -252,7 +252,7 @@
         Your license is now activated and ready for use on this machine. A copy
         of your activated license has been saved to c:\flexlm
       </p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
     <div align="center" v-if="status === 'Failed' || status === 'Design'">
@@ -262,7 +262,7 @@
       ></i>
       <h1>License activation failed</h1>
       <p>Please contact software.support@dnv.com</p>
-      <b-button @click="close" variant="primary">Close</b-button>
+      <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
   </div>
 </template>
@@ -280,7 +280,7 @@ export default {
       status: "Init", //Design
       selected: undefined,
       message: "",
-      transferFailedMessage: "",
+      transferFailedMessage: "Reassignment failed",
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
@@ -319,6 +319,9 @@ export default {
         }
       }
       return result;
+    },
+    hasLicensesLeft() {
+      return this.availableLicenses.length - this.selectedLicenses.length;
     },
     token() {
       return window.electron.getToken();
@@ -425,17 +428,19 @@ export default {
               headers: { Authorization: `Bearer ${this.token}` },
             }
           )
+          .then(() => {
+            this.setStatus("Transferred");
+          })
           .catch((e) => {
             if (e.message === "Network Error") {
               this.setStatus("Offline");
             } else {
               this.setStatus("TransferFailed");
               this.transferFailedMessage =
-                "Transfer failed, please contact software.support@dnv.com";
+                "Reassignment failed for unknow reasons, please contact software.support@dnv.com";
             }
 
             if (e.status === 409) {
-              this.setStatus("TransferFailed");
               this.transferFailedMessage = e.message;
             }
 
@@ -443,11 +448,9 @@ export default {
             window.electron.error(e);
           });
       }
-
-      this.setStatus("Transferred");
     },
     back() {
-      this.init(false);
+      this.init(true);
     },
     async generate() {
       try {
