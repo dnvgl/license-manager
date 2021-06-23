@@ -117,7 +117,7 @@
         </b-row>
       </b-form-checkbox-group>
 
-      <b-form class="mb-3" @submit="transfer" :novalidate="true">
+      <b-form class="mb-3" :novalidate="true">
         <b-form-group label="Email:" label-for="input-email">
           <b-form-input
             id="input-email"
@@ -136,7 +136,7 @@
       </b-form>
 
       <b-button
-        type="submit"
+        @click="transfer"
         class="mr-2"
         variant="primary"
         :disabled="!emailValidation || !selectedLicenses.length"
@@ -168,8 +168,21 @@
         An email will be sent to {{ transfereeEmail }} to notify about the
         reassingment of the license
       </p>
-      <b-button @click="back" variant="primary">Back</b-button>
+      <b-button @click="back" class="mr-2" variant="primary">Back</b-button>
       <b-button @click="close" variant="subtle">Close</b-button>
+    </div>
+
+    <div
+      align="center"
+      v-if="status === 'TransferFailed' || status === 'Design'"
+    >
+      <i
+        class="fal fa-exclamation-circle feedback-icon fail"
+        aria-hidden="true"
+      ></i>
+      <h1>{{ transferFailedMessage }}</h1>
+      <p>Please contact software.support@dnv.com</p>
+      <b-button @click="close" variant="primary">Close</b-button>
     </div>
 
     <div
@@ -267,6 +280,7 @@ export default {
       status: "Init", //Design
       selected: undefined,
       message: "",
+      transferFailedMessage: "",
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
@@ -415,8 +429,16 @@ export default {
             if (e.message === "Network Error") {
               this.setStatus("Offline");
             } else {
-              this.setStatus("Failed");
+              this.setStatus("TransferFailed");
+              this.transferFailedMessage =
+                "Transfer failed, please contact software.support@dnv.com";
             }
+
+            if (e.status === 409) {
+              this.setStatus("TransferFailed");
+              this.transferFailedMessage = e.message;
+            }
+
             window.electron.error("not able to transfer license");
             window.electron.error(e);
           });
