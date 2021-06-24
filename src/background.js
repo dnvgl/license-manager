@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
@@ -15,6 +15,14 @@ import authService from "./auth-service";
 autoUpdater.logger = logger;
 autoUpdater.logger.transports.file.level = "info";
 
+ipcMain.on("log", (event, arg) => {
+  logger.info(arg);
+});
+
+ipcMain.on("error", (event, arg) => {
+  logger.error(arg);
+});
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 if (!isDevelopment) {
@@ -27,8 +35,8 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 app.on("login", (event, webContents, details, authInfo, callback) => {
-  console.log("login triggered: ");
-  console.log(authInfo);
+  logger.warn("login triggered: ");
+  logger.warn(authInfo);
 
   event.preventDefault();
 
@@ -65,7 +73,7 @@ app.on("ready", async () => {
     try {
       await installExtension(VUEJS_DEVTOOLS);
     } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
+      logger.error("Vue Devtools failed to install:", e.toString());
     }
   }
 
@@ -73,7 +81,7 @@ app.on("ready", async () => {
     await authService.refreshTokens();
     createAppWindow();
   } catch (err) {
-    console.log(err);
+    logger.info(err);
     createAuthWindow();
   }
 });
@@ -94,6 +102,6 @@ if (isDevelopment) {
 }
 
 process.on("uncaughtException", (err) => {
-  console.log(err);
+  logger.error(err);
   createAppWindow();
 });
