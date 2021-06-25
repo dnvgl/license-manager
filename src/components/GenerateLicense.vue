@@ -101,6 +101,10 @@
       "
     >
       <h1>Reassign licenses</h1>
+      <p>
+        Once the license is reassigned, the new license owener will be notified
+        by email on how to activate the license to get started.
+      </p>
       <p>The following licenses will be reassigned:</p>
       <div class="p-2" style="background-color:#ccecf8;">
         <div
