@@ -445,9 +445,10 @@ export default {
             }
 
             if (e.response && e.response.status === 409) {
+              console.log(e.response);
               this.transferFailedMessage =
-                e.response.message ||
-                "User must have the same account for reassignment to take place, please contact software.support@dnv.com";
+                e.response.data.message ||
+                "User must have the same account, please contact software.support@dnv.com";
             }
 
             window.electron.error("not able to transfer license");
