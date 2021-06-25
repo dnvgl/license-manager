@@ -444,8 +444,10 @@ export default {
                 "Reassignment failed for unknown reasons, please contact software.support@dnv.com";
             }
 
-            if (e.status === 409) {
-              this.transferFailedMessage = e.message;
+            if (e.response && e.response.status === 409) {
+              this.transferFailedMessage =
+                e.response.message ||
+                "User must have the same account for reassignment to take place, please contact software.support@dnv.com";
             }
 
             window.electron.error("not able to transfer license");
