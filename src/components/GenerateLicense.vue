@@ -46,7 +46,7 @@
         (status === 'Loaded' && availableLicenses.length) || status === 'Design'
       "
     >
-      <h1>Available licenses</h1>
+      <h1>Available license(s)</h1>
       Select one or more licenses to
       <span class="avenir-medium">Activate</span> on this computer or
       <span class="avenir-medium">Reassign</span>
@@ -101,12 +101,12 @@
           status === 'Design'
       "
     >
-      <h1>Reassign licenses</h1>
+      <h1>Reassign license(s)</h1>
       <p>
-        Once the license is reassigned, the new license owener will be notified
-        by email on how to activate the license to get started.
+        The user who received this license will be notified by email. The email
+        will provide information on how to activate this license.
       </p>
-      <p>The following licenses will be reassigned:</p>
+      <p>The following license(s) will be reassigned:</p>
       <div class="p-1" style="background-color:#ccecf8;">
         <div
           class="p-1"
@@ -215,9 +215,9 @@
     </div>
 
     <div v-if="status === 'Generate' || status === 'Design'">
-      <h1>Activate license</h1>
+      <h1>Activate license(s)</h1>
 
-      Once you click Activate, the license will be available for use
+      Once you click Activate, the license(s) will be available for use
 
       <b-form-group
         id="macInputGroup"
@@ -286,7 +286,7 @@ export default {
   },
   data() {
     return {
-      status: "Init", //Design
+      status: "Design", //Design
       selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
@@ -392,7 +392,7 @@ export default {
         (o) => o.value.mac == this.primaryMacAddress.mac
       );
 
-      this.selected = defaultOption ? defaultOption.value : undefined;
+      this.selected = defaultOption;
 
       if (this.status === "Design") {
         this.message = "Activating license ...";
