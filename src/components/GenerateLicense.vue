@@ -87,6 +87,7 @@
         class="mr-2"
         @click="() => this.setStatus('Transfer')"
         variant="secondary"
+        :disabled="!selectedLicenses.length"
         >Reassign</b-button
       >
       <b-button @click="close" style="float:right;" variant="subtle"
@@ -106,7 +107,7 @@
         by email on how to activate the license to get started.
       </p>
       <p>The following licenses will be reassigned:</p>
-      <div class="p-2" style="background-color:#ccecf8;">
+      <div class="p-1" style="background-color:#ccecf8;">
         <div
           class="p-1"
           v-for="selectedLicense in selectedLicenses"
@@ -119,7 +120,7 @@
           }}
         </div>
       </div>
-      <b-form class="mb-3" :novalidate="true">
+      <b-form class="mb-2 mt-2" :novalidate="true">
         <b-form-group label="Email:" label-for="input-email">
           <b-form-input
             id="input-email"
@@ -285,7 +286,7 @@ export default {
   },
   data() {
     return {
-      status: "Init", //Design
+      status: "Design", //Design
       selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
