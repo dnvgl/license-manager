@@ -166,10 +166,10 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License reassigned successfully</h1>
+      <h1>License(s) reassigned successfully</h1>
       <p>
         An email will be sent to {{ transfereeEmail }} to notify about the
-        reassingment of the license
+        reassingment of the license(s)
       </p>
       <b-button
         v-show="hasLicensesLeft"
@@ -256,10 +256,10 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License activated successfully</h1>
+      <h1>License(s) activated successfully</h1>
       <p>
-        Your license is now activated and ready for use on this machine. A copy
-        of your activated license has been saved to c:\flexlm
+        Your license(s) is now activated and ready for use on this machine. A
+        copy of your activated license(s) has been saved to c:\flexlm
       </p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
