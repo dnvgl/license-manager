@@ -286,7 +286,7 @@ export default {
   },
   data() {
     return {
-      status: "Design", //Design
+      status: "Init", //Design
       selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
