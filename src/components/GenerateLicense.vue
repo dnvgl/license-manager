@@ -392,7 +392,7 @@ export default {
         (o) => o.value.mac == this.primaryMacAddress.mac
       );
 
-      this.selected = defaultOption;
+      this.selected = defaultOption.value;
 
       if (this.status === "Design") {
         this.message = "Activating license ...";
