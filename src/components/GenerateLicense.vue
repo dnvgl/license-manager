@@ -365,7 +365,7 @@ export default {
           .get(
             process.env.NODE_ENV === "development"
               ? "http://localhost:3000/api/availableLicenses"
-              : "https://software-license-dev.dnvgl.com/api/availableLicenses",
+              : "https://software-license-uat.dnvgl.com/api/availableLicenses",
             {
               headers: { Authorization: `Bearer ${this.token}` },
             }
@@ -428,7 +428,7 @@ export default {
           .post(
             process.env.NODE_ENV === "development"
               ? `http://localhost:3000/api/transferLicense/${selectedLicense}`
-              : `https://software-license-dev.dnvgl.com/api/transferLicense/${selectedLicense}`,
+              : `https://software-license-uat.dnvgl.com/api/transferLicense/${selectedLicense}`,
             {
               newLicenseeEmail: this.transfereeEmail,
               fedId: jwt.userId,
@@ -493,7 +493,7 @@ export default {
             .post(
               process.env.NODE_ENV === "development"
                 ? `http://localhost:3000/api/generateLicense/${selectedLicense}`
-                : `https://software-license-dev.dnvgl.com/api/generateLicense/${selectedLicense}`,
+                : `https://software-license-uat.dnvgl.com/api/generateLicense/${selectedLicense}`,
               {
                 hostId: this.primaryMac,
                 fedId: jwt.userId,
