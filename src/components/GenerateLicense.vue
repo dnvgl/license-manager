@@ -579,8 +579,8 @@ export default {
         axios
           .post(
             process.env.NODE_ENV === "development"
-              ? `http://localhost:3000/api/transferFailed/${selectedLicense}`
-              : `https://software-license-uat.dnvgl.com/api/transferFailed/${selectedLicense}`,
+              ? `http://localhost:3000/api/transferFailed/${this.selectedLicenses[0]}`
+              : `https://software-license-uat.dnvgl.com/api/transferFailed/${this.selectedLicenses[0]}`,
             {
               comment: this.transferFailedComment,
               transfereeEmail: this.transfereeEmail,
