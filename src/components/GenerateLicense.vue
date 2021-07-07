@@ -181,15 +181,61 @@
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
+    <div v-if="status === 'TransferFailed' || status === 'Design'">
+      <div align="center">
+        <i
+          class="fal fa-exclamation-circle feedback-icon fail"
+          aria-hidden="true"
+        ></i>
+        <h1>{{ transferFailedMessage }}</h1>
+        <p>
+          We were not able to find {{ transfereeEmail }} in the same company
+          account, please add comments and click "Submit" to create a support
+          ticket to solve the issue.
+        </p>
+      </div>
+
+      <b-form class="mb-2 mt-2" :novalidate="true">
+        <b-form-group label="Comment:" label-for="input-comment">
+          <b-form-input
+            id="input-comment"
+            placeholder="Comment"
+            v-model="transferFailedComment"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </b-form>
+
+      <b-button class="mr-2" @click="submitTransferFailed" variant="primary"
+        >Submit</b-button
+      >
+      <b-button @click="close" variant="subtle">Exit</b-button>
+    </div>
+
     <div
       align="center"
-      v-if="status === 'TransferFailed' || status === 'Design'"
+      v-if="status === 'TransferFailedSuccess' || status === 'Design'"
+    >
+      <i
+        class="fal fa-check-circle feedback-icon success"
+        aria-hidden="true"
+      ></i>
+      <h1>Support form successfully submitted</h1>
+      <p>
+        Someone from support will contact you soon
+      </p>
+      <b-button @click="close" variant="subtle">Exit</b-button>
+    </div>
+
+    <div
+      align="center"
+      v-if="status === 'TransferFailedFailed' || status === 'Design'"
     >
       <i
         class="fal fa-exclamation-circle feedback-icon fail"
         aria-hidden="true"
       ></i>
-      <h1>{{ transferFailedMessage }}</h1>
+      <h1>Sending form failed</h1>
       <p>Please contact software.support@dnv.com</p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
@@ -290,6 +336,7 @@ export default {
       selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
+      transferFailedComment: "",
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
@@ -453,7 +500,7 @@ export default {
               console.log(e.response);
               this.transferFailedMessage =
                 e.response.data.message ||
-                "User must have the same account, please contact software.support@dnv.com";
+                "User must have the same account, please add comments and click “SUBMIT” to create a support ticket to solve the issue";
             }
 
             window.electron.error("not able to transfer license");
@@ -523,6 +570,37 @@ export default {
         this.setStatus("Success");
       } catch (e) {
         this.setStatus("Failed");
+        window.electron.error("not able to generate license");
+        window.electron.error(e);
+      }
+    },
+    async submitTransferFailed() {
+      try {
+        axios
+          .post(
+            process.env.NODE_ENV === "development"
+              ? `http://localhost:3000/api/transferFailed/${selectedLicense}`
+              : `https://software-license-uat.dnvgl.com/api/transferFailed/${selectedLicense}`,
+            {
+              comment: this.transferFailedComment,
+              transfereeEmail: this.transfereeEmail,
+            },
+            {
+              headers: { Authorization: `Bearer ${this.token}` },
+            }
+          )
+          .catch((e) => {
+            if (e.message === "Network Error") {
+              this.setStatus("Offline");
+            } else {
+              this.setStatus("TransferFailedFailed");
+            }
+            window.electron.error("not able to send transfer failed message");
+            window.electron.error(e);
+          });
+        this.setStatus("TransferFailedSuccess");
+      } catch (e) {
+        this.setStatus("TransferFailedFailed");
         window.electron.error("not able to generate license");
         window.electron.error(e);
       }
