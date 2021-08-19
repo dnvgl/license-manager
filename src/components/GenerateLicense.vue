@@ -13,9 +13,7 @@
     >
       <i class="fal fa-shield-check feedback-icon fail" aria-hidden="true"></i>
       <h1>No internet connection</h1>
-      <p>
-        Sign in failed due to restrictions from your firewall
-      </p>
+      <p>Sign in failed due to restrictions from your firewall</p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
@@ -46,7 +44,7 @@
         (status === 'Loaded' && availableLicenses.length) || status === 'Design'
       "
     >
-      <h1>Available license(s)</h1>
+      <h1>Available licenses</h1>
       Select one or more licenses to
       <span class="avenir-medium">Activate</span> on this computer or
       <span class="avenir-medium">Reassign</span>
@@ -90,7 +88,7 @@
         :disabled="!selectedLicenses.length"
         >Reassign</b-button
       >
-      <b-button @click="close" style="float:right;" variant="subtle"
+      <b-button @click="close" style="float: right" variant="subtle"
         >Exit</b-button
       >
     </div>
@@ -98,16 +96,16 @@
     <div
       v-if="
         (status === 'Transfer' && availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
-      <h1>Reassign license(s)</h1>
+      <h1>Reassign licenses</h1>
       <p>
         The user who received this license will be notified by email. The email
         will provide information on how to activate this license.
       </p>
-      <p>The following license(s) will be reassigned:</p>
-      <div class="p-1" style="background-color:#ccecf8;">
+      <p>The following licenses will be reassigned:</p>
+      <div class="p-1" style="background-color: #ccecf8">
         <div
           class="p-1"
           v-for="selectedLicense in selectedLicenses"
@@ -166,10 +164,10 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License(s) reassigned successfully</h1>
+      <h1>Licenses reassigned successfully</h1>
       <p>
         An email will be sent to {{ transfereeEmail }} to notify about the
-        reassingment of the license(s)
+        reassingment of the licenses
       </p>
       <b-button
         v-show="hasLicensesLeft"
@@ -221,9 +219,7 @@
         aria-hidden="true"
       ></i>
       <h1>Support form successfully submitted</h1>
-      <p>
-        Someone from support will contact you soon
-      </p>
+      <p>Someone from support will contact you soon</p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
 
@@ -244,7 +240,7 @@
       align="center"
       v-if="
         (status === 'Loaded' && !availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
@@ -261,9 +257,9 @@
     </div>
 
     <div v-if="status === 'Generate' || status === 'Design'">
-      <h1>Activate license(s)</h1>
+      <h1>Activate licenses</h1>
 
-      Once you click Activate, the license(s) will be available for use
+      Once you click Activate, the licenses will be available for use
 
       <b-form-group
         id="macInputGroup"
@@ -302,10 +298,10 @@
         class="fal fa-check-circle feedback-icon success"
         aria-hidden="true"
       ></i>
-      <h1>License(s) activated successfully</h1>
+      <h1>Licenses activated successfully</h1>
       <p>
-        Your license(s) is now activated and ready for use on this machine. A
-        copy of your activated license(s) has been saved to c:\flexlm
+        Your licenses is now activated and ready for use on this machine. A copy
+        of your activated licenses has been saved to c:\flexlm
       </p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
@@ -355,7 +351,8 @@ export default {
         return null;
       }
 
-      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      const emailFormat =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
     options() {
