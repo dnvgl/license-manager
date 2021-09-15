@@ -96,7 +96,7 @@
     <div
       v-if="
         (status === 'Transfer' && availableLicenses.length) ||
-        status === 'Design'
+          status === 'Design'
       "
     >
       <h1>Reassign licenses</h1>
@@ -240,7 +240,7 @@
       align="center"
       v-if="
         (status === 'Loaded' && !availableLicenses.length) ||
-        status === 'Design'
+          status === 'Design'
       "
     >
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
@@ -300,8 +300,8 @@
       ></i>
       <h1>Licenses activated successfully</h1>
       <p>
-        Your licenses is now activated and ready for use on this machine. A copy
-        of your activated licenses has been saved to c:\flexlm
+        Your licenses are now activated and ready for use on this machine. A
+        copy of your activated licenses has been saved to c:\flexlm
       </p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
@@ -351,8 +351,7 @@ export default {
         return null;
       }
 
-      const emailFormat =
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
     options() {
