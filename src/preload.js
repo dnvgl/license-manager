@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld("electron", {
       process.env.DNVSLM_LICENSE_FILE
     );
 
+    directories = [...new Set(directories)];
+
     directories.forEach((directory) => {
       if (!fs.existsSync(directory)) {
         try {
