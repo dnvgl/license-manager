@@ -30,6 +30,7 @@ module.exports = {
       preload: "src/preload.js",
       externals: ["keytar"],
       builderOptions: {
+        generateUpdatesFilesForAllChannels: true,
         publish: ["github"],
         productName: "License Activation Tool",
       },

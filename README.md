@@ -6,6 +6,7 @@ license manager for ds applications
 
 set environment variables
 update package.json version
-run npm run electron:build -- -p always
+set correct channel in background.js
+run npm run release
 go to github releases
 RELEASE!
