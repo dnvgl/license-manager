@@ -96,7 +96,7 @@
     <div
       v-if="
         (status === 'Transfer' && availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
       <h1>Reassign licenses</h1>
@@ -240,7 +240,7 @@
       align="center"
       v-if="
         (status === 'Loaded' && !availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
@@ -328,6 +328,7 @@ export default {
   },
   data() {
     return {
+      baseUrl: "licenseactivation.dnv.com",
       status: "Init", //Design
       selected: undefined,
       message: "",
@@ -351,7 +352,8 @@ export default {
         return null;
       }
 
-      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      const emailFormat =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
     options() {
@@ -408,7 +410,7 @@ export default {
           .get(
             process.env.NODE_ENV === "development"
               ? "http://localhost:3000/api/availableLicenses"
-              : "https://software-license-uat.dnvgl.com/api/availableLicenses",
+              : `https://${this.baseUrl}/api/availableLicenses`,
             {
               headers: { Authorization: `Bearer ${this.token}` },
             }
@@ -471,7 +473,7 @@ export default {
           .post(
             process.env.NODE_ENV === "development"
               ? `http://localhost:3000/api/transferLicense/${selectedLicense}`
-              : `https://software-license-uat.dnvgl.com/api/transferLicense/${selectedLicense}`,
+              : `https://${this.baseUrl}/api/transferLicense/${selectedLicense}`,
             {
               newLicenseeEmail: this.transfereeEmail,
               fedId: jwt.userId,
@@ -536,7 +538,7 @@ export default {
             .post(
               process.env.NODE_ENV === "development"
                 ? `http://localhost:3000/api/generateLicense/${selectedLicense}`
-                : `https://software-license-uat.dnvgl.com/api/generateLicense/${selectedLicense}`,
+                : `https://${this.baseUrl}/api/generateLicense/${selectedLicense}`,
               {
                 hostId: this.primaryMac,
                 fedId: jwt.userId,
@@ -576,7 +578,7 @@ export default {
           .post(
             process.env.NODE_ENV === "development"
               ? `http://localhost:3000/api/transferFailed/${this.selectedLicenses[0]}`
-              : `https://software-license-uat.dnvgl.com/api/transferFailed/${this.selectedLicenses[0]}`,
+              : `https://${this.baseUrl}/api/transferFailed/${this.selectedLicenses[0]}`,
             {
               comment: this.transferFailedComment,
               transfereeEmail: this.transfereeEmail,

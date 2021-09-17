@@ -14,6 +14,7 @@ import authService from "./auth-service";
 
 autoUpdater.logger = logger;
 autoUpdater.logger.transports.file.level = "info";
+//autoUpdater.channel = "beta";
 
 ipcMain.on("log", (event, arg) => {
   logger.info(arg);
