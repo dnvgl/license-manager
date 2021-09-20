@@ -1,14 +1,8 @@
 "use strict";
 
-import {
-  app,
-  protocol,
-  BrowserWindow,
-  ipcMain,
-  autoUpdater,
-  dialog,
-} from "electron";
+import { app, protocol, BrowserWindow, ipcMain, dialog } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
 //override console
