@@ -1,6 +1,6 @@
 {
   "name": "license-manager",
-  "version": "0.1.60-beta",
+  "version": "0.1.61-beta",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -28,7 +28,6 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "electron-log": "^4.3.2",
-    "electron-updater": "^4.3.8",
     "keytar": "^7.6.0",
     "randomstring": "^1.1.5",
     "vue": "^2.6.11"
