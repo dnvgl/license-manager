@@ -96,7 +96,7 @@
     <div
       v-if="
         (status === 'Transfer' && availableLicenses.length) ||
-        status === 'Design'
+          status === 'Design'
       "
     >
       <h1>Reassign licenses</h1>
@@ -240,7 +240,7 @@
       align="center"
       v-if="
         (status === 'Loaded' && !availableLicenses.length) ||
-        status === 'Design'
+          status === 'Design'
       "
     >
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
@@ -311,7 +311,7 @@
         class="fal fa-exclamation-circle feedback-icon fail"
         aria-hidden="true"
       ></i>
-      <h1>License activation failed</h1>
+      <h1>{{ licenseActivationFailedMessage }}</h1>
       <p>Please contact software.support@dnv.com</p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
@@ -334,6 +334,7 @@ export default {
       message: "",
       transferFailedMessage: "Reassignment failed",
       transferFailedComment: "",
+      licenseActivationFailedMessage: "License activation failed",
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
@@ -352,8 +353,7 @@ export default {
         return null;
       }
 
-      const emailFormat =
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
     options() {
@@ -523,12 +523,11 @@ export default {
 
         for (let i = 0; i < this.selectedLicenses.length; i++) {
           const selectedLicense = this.selectedLicenses[i];
+          const productInfo = this.availableLicenses.find(
+            (a) => a.opportunityId === selectedLicense
+          ).productInfo;
 
-          this.message = `Activating license for ${
-            this.availableLicenses.find(
-              (a) => a.opportunityId === selectedLicense
-            ).productInfo
-          } using mac address ${this.selected.mac}...`;
+          this.message = `Activating license for ${productInfo} using mac address ${this.selected.mac}...`;
 
           window.electron.log(this.message);
 
@@ -551,18 +550,23 @@ export default {
               if (e.message === "Network Error") {
                 this.setStatus("Offline");
               } else {
+                this.licenseActivationFailedMessage = `License activation failed for ${productInfo}`;
                 this.setStatus("Failed");
               }
               window.electron.error("not able to generate license");
               window.electron.error(e);
             });
 
-          const contentDisposition = license.headers["content-disposition"];
-          const filename = contentDisposition.substring(
-            contentDisposition.indexOf("=") + 1
-          );
+          if (license) {
+            const contentDisposition = license.headers["content-disposition"];
+            const filename = contentDisposition.substring(
+              contentDisposition.indexOf("=") + 1
+            );
 
-          window.electron.writeLicenseFile(filename, license.data);
+            window.electron.writeLicenseFile(filename, license.data);
+          } else {
+            return;
+          }
         }
 
         this.setStatus("Success");
