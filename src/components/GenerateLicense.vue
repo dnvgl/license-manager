@@ -119,7 +119,7 @@
         </div>
       </div>
       <b-form class="mb-2 mt-2" :novalidate="true">
-        <b-form-group label="Email:" label-for="input-email">
+        <b-form-group label="Email" label-for="input-email">
           <b-form-input
             id="input-email"
             placeholder="Enter the email of the person to reassign the license to"
@@ -187,14 +187,17 @@
         ></i>
         <h1>{{ transferFailedMessage }}</h1>
         <p>
-          We were not able to find {{ transfereeEmail }} in the same company
-          account, please add comments and click "Submit" to create a support
-          ticket to solve the issue.
+          We were not able to find {{ transfereeEmail }} in your company
+          account. If this was unexpected plase contact our support team for
+          assistance by submitting the form below.
         </p>
       </div>
 
       <b-form class="mb-2 mt-2" :novalidate="true">
-        <b-form-group label="Comment:" label-for="input-comment">
+        <b-form-group
+          label="Message to support (optional)"
+          label-for="input-comment"
+        >
           <b-form-input
             id="input-comment"
             placeholder="Comment"
@@ -263,7 +266,7 @@
 
       <b-form-group
         id="macInputGroup"
-        label="Your MAC ID:"
+        label="Your MAC ID"
         label-for="macInput"
         description="The MAC ID is used to lock the license to this machine.  Usually you can use the default MAC ID"
       >
@@ -328,7 +331,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: "licenseactivation-uat.dnv.com",
+      baseUrl: "licenseactivation.dnv.com",
       status: "Init", //Design
       selected: undefined,
       message: "",
