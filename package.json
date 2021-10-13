@@ -41,6 +41,7 @@
     "babel-eslint": "^10.1.0",
     "electron": "^12.1.0",
     "electron-devtools-installer": "^3.1.0",
+    "eslint-plugin-vue": "^7.19.1",
     "mocha": "^8.3.2",
     "node-sass": "^6.0.0",
     "sass-loader": "^10.1.0",
