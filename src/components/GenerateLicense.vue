@@ -331,7 +331,7 @@ export default {
   },
   data() {
     return {
-      baseUrl: "licenseactivation.dnv.com",
+      baseUrl: "licenseactivation-uat.dnv.com",
       status: "Init", //Design
       selected: undefined,
       message: "",
