@@ -331,8 +331,8 @@ export default {
   },
   data() {
     return {
-      baseUrl: "https://licenseactivation-uat.dnv.com",
-      //baseUrl: "https://licenseactivation.dnv.com",
+      //baseUrl: "https://licenseactivation-uat.dnv.com",
+      baseUrl: "https://licenseactivation.dnv.com",
       //baseUrl: "http://localhost:3000",
       status: "Init", //Design
       selected: undefined,
