@@ -314,7 +314,7 @@
         class="fal fa-exclamation-circle feedback-icon fail"
         aria-hidden="true"
       ></i>
-      <h1>License activation failed</h1>
+      <h1>{{ licenseActivationFailedMessage }}</h1>
       <p>Please contact software.support@dnv.com</p>
       <b-button @click="close" variant="subtle">Exit</b-button>
     </div>
@@ -331,14 +331,16 @@ export default {
   },
   data() {
     return {
+      baseUrl: "https://licenseactivation-dev.dnv.com",
       //baseUrl: "https://licenseactivation-uat.dnv.com",
-      baseUrl: "https://licenseactivation.dnv.com",
+      //baseUrl: "https://licenseactivation.dnv.com",
       //baseUrl: "http://localhost:3000",
       status: "Init", //Design
       selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
       transferFailedComment: "",
+      licenseActivationFailedMessage: "License activation failed",
       availableLicenses: [],
       selectedLicenses: [],
       value: 0,
@@ -520,12 +522,11 @@ export default {
 
         for (let i = 0; i < this.selectedLicenses.length; i++) {
           const selectedLicense = this.selectedLicenses[i];
+          const productInfo = this.availableLicenses.find(
+            (a) => a.opportunityId === selectedLicense
+          ).productInfo;
 
-          this.message = `Activating license for ${
-            this.availableLicenses.find(
-              (a) => a.opportunityId === selectedLicense
-            ).productInfo
-          } using mac address ${this.selected.mac}...`;
+          this.message = `Activating license for ${productInfo} using mac address ${this.selected.mac}...`;
 
           window.electron.log(this.message);
 
@@ -546,18 +547,23 @@ export default {
               if (e.message === "Network Error") {
                 this.setStatus("Offline");
               } else {
+                this.licenseActivationFailedMessage = `License activation failed for ${productInfo}`;
                 this.setStatus("Failed");
               }
               window.electron.error("not able to generate license");
               window.electron.error(e);
             });
 
-          const contentDisposition = license.headers["content-disposition"];
-          const filename = contentDisposition.substring(
-            contentDisposition.indexOf("=") + 1
-          );
+          if (license) {
+            const contentDisposition = license.headers["content-disposition"];
+            const filename = contentDisposition.substring(
+              contentDisposition.indexOf("=") + 1
+            );
 
-          window.electron.writeLicenseFile(filename, license.data);
+            window.electron.writeLicenseFile(filename, license.data);
+          } else {
+            return;
+          }
         }
 
         this.setStatus("Success");
