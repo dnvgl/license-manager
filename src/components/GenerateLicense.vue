@@ -96,7 +96,7 @@
     <div
       v-if="
         (status === 'Transfer' && availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
       <h1>Reassign licenses</h1>
@@ -243,7 +243,7 @@
       align="center"
       v-if="
         (status === 'Loaded' && !availableLicenses.length) ||
-          status === 'Design'
+        status === 'Design'
       "
     >
       <i class="fal fa-empty-set feedback-icon fail" aria-hidden="true"></i>
@@ -331,10 +331,10 @@ export default {
   },
   data() {
     return {
-      baseUrl: "https://licenseactivation-dev.dnv.com",
+      //baseUrl: "https://licenseactivation-xba.dnv.com",
       //baseUrl: "https://licenseactivation-uat.dnv.com",
       //baseUrl: "https://licenseactivation.dnv.com",
-      //baseUrl: "http://localhost:3000",
+      baseUrl: "http://localhost:30009",
       status: "Init", //Design
       selected: undefined,
       message: "",
@@ -359,7 +359,8 @@ export default {
         return null;
       }
 
-      const emailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+      const emailFormat =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
     options() {
@@ -428,7 +429,7 @@ export default {
             } else {
               this.setStatus("Loaded");
             }
-            window.electron.error(e);
+            window.electron.error(e.message);
           });
       } else {
         this.setStatus("Loaded");
@@ -494,14 +495,13 @@ export default {
             }
 
             if (e.response && e.response.status === 409) {
-              console.log(e.response);
               this.transferFailedMessage =
                 e.response.data.message ||
                 "User must have the same account, please add comments and click “SUBMIT” to create a support ticket to solve the issue";
             }
 
             window.electron.error("not able to transfer license");
-            window.electron.error(e);
+            window.electron.error(e.message);
           });
       }
     },
@@ -551,7 +551,7 @@ export default {
                 this.setStatus("Failed");
               }
               window.electron.error("not able to generate license");
-              window.electron.error(e);
+              window.electron.error(e.message);
             });
 
           if (license) {
@@ -570,7 +570,7 @@ export default {
       } catch (e) {
         this.setStatus("Failed");
         window.electron.error("not able to generate license");
-        window.electron.error(e);
+        window.electron.error(e.message);
       }
     },
     async submitTransferFailed() {
@@ -593,13 +593,13 @@ export default {
               this.setStatus("TransferFailedFailed");
             }
             window.electron.error("not able to send transfer failed message");
-            window.electron.error(e);
+            window.electron.error(e.message);
           });
         this.setStatus("TransferFailedSuccess");
       } catch (e) {
         this.setStatus("TransferFailedFailed");
         window.electron.error("not able to generate license");
-        window.electron.error(e);
+        window.electron.error(e.message);
       }
     },
     close() {

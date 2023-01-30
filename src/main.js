@@ -1,9 +1,7 @@
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
-import OneDesignVue from "@dnvgl-onefoundation/onedesign-vue";
 
 Vue.use(BootstrapVue);
-Vue.use(OneDesignVue);
 
 import "./assets/scss/main.scss";
 
