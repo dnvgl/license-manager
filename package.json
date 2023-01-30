@@ -1,6 +1,6 @@
 {
   "name": "license-manager",
-  "version": "0.1.69-alpha",
+  "version": "0.1.69-beta",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

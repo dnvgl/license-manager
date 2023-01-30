@@ -7,7 +7,9 @@ const { getLicenseFileDirectories } = require("../src/license-file");
 
 contextBridge.exposeInMainWorld("electron", {
   getMacAddress: () => os.networkInterfaces(),
-  getToken: () => window.process.argv.slice(-1)[0],
+  getToken: () => {
+    return window.process.argv.slice(-2)[0];
+  },
   log: (m) => ipcRenderer.send("log", m),
   error: (m) => ipcRenderer.send("error", m),
   writeLicenseFile: (filename, data) => {

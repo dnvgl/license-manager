@@ -28,31 +28,29 @@ function getMac(macAddresses, name) {
 }
 
 function primaryMacAddress(macAddresses) {
-  const wireless = getMac(macAddresses, "wireless");
+  let wireless = getMac(macAddresses, "wireless");
+  if (!wireless) {
+    wireless = getMac(macAddresses, "wi-fi");
+  }
+  if (!wireless) {
+    wireless = getMac(macAddresses, "wifi");
+  }
+  let ethernet = getMac(macAddresses, "ethernet");
+  if (!ethernet) {
+    ethernet = getMac(macAddresses, "eth");
+  }
+  if (!ethernet) {
+    ethernet = getMac(macAddresses);
+  }
+
+  const primaryMacAddresses = [];
   if (wireless) {
-    return wireless;
+    primaryMacAddresses.push(wireless);
   }
-  const wifi1 = getMac(macAddresses, "wi-fi");
-  if (wifi1) {
-    return wifi1;
-  }
-  const wifi2 = getMac(macAddresses, "wifi");
-  if (wifi2) {
-    return wifi2;
-  }
-  const ethernet = getMac(macAddresses, "ethernet");
   if (ethernet) {
-    return ethernet;
+    primaryMacAddresses.push(ethernet);
   }
-  const eth = getMac(macAddresses, "eth");
-  if (eth) {
-    return eth;
-  }
-  const def = getMac(macAddresses);
-  if (def) {
-    return def;
-  }
-  return undefined;
+  return primaryMacAddresses;
 }
 
 module.exports = {
