@@ -322,7 +322,7 @@ export default {
       baseUrl: "https://licenseactivation-uat.dnv.com",
       //baseUrl: "https://licenseactivation.dnv.com",
       //baseUrl: "http://localhost:30009",
-      status: "Design", //Design
+      status: "Init", //Design
       message: "",
       transferFailedMessage: "Reassignment failed",
       transferFailedComment: "",
