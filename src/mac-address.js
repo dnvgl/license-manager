@@ -1,5 +1,5 @@
 function getMac(macAddresses, name) {
-  //exact match first
+  // exact match first
   for (const key in macAddresses) {
     if (!name || key.toLowerCase() === name) {
       if (Object.hasOwnProperty.call(macAddresses, key)) {
@@ -13,11 +13,13 @@ function getMac(macAddresses, name) {
     }
   }
 
-  //then check for approximate matches
+  // then check for approximate matches
   for (const key in macAddresses) {
     if (!name || key.toLowerCase().indexOf(name) > -1) {
       if (Object.hasOwnProperty.call(macAddresses, key)) {
-        const candidate = macAddresses[key].filter((m) => !m.internal)[0];
+        const candidate = macAddresses[key].filter(
+          (m) => !m.internal && m.mac !== "00:00:00:00:00:00"
+        )[0];
         if (candidate) {
           return candidate;
         }
@@ -50,6 +52,7 @@ function primaryMacAddress(macAddresses) {
   if (ethernet) {
     primaryMacAddresses.push(ethernet);
   }
+
   return primaryMacAddresses;
 }
 

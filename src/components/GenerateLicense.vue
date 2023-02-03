@@ -335,11 +335,15 @@ export default {
   },
   computed: {
     primaryMacAddress() {
-      return primaryMacAddress(this.macAddresses);
+      const result = primaryMacAddress(this.macAddresses);
+      window.electron.log(result);
+      return result;
     },
     primaryMac() {
       return this.primaryMacAddress
-        .map((p) => p.mac.replace(/:/g, ""))
+        .map((p) => {
+          return p.mac.replace(/:/g, "");
+        })
         .join(" ");
     },
     emailValidation() {
@@ -508,7 +512,7 @@ export default {
             (a) => a.opportunityId === selectedLicense
           ).productInfo;
 
-          this.message = `Activating license for ${productInfo} using mac address ${this.selected.mac}...`;
+          this.message = `Activating license for ${productInfo} using mac address ${this.primaryMac}...`;
 
           window.electron.log(this.message);
 
