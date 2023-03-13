@@ -1,32 +1,39 @@
 function getMac(macAddresses, name) {
   // exact match first
-  for (const key in macAddresses) {
-    if (!name || key.toLowerCase() === name) {
-      if (Object.hasOwnProperty.call(macAddresses, key)) {
-        const candidate = macAddresses[key].filter(
-          (m) => !m.internal && m.mac !== "00:00:00:00:00:00"
-        )[0];
-        if (candidate) {
-          return candidate;
-        }
-      }
-    }
+  let m = macAddresses.find(
+    (m) =>
+      (!name ||
+        (m.iface && name && m.iface.toLowerCase() === name.toLowerCase())) &&
+      !m.internal &&
+      m.mac &&
+      m.mac !== "00:00:00:00:00:00"
+  );
+
+  if (m) {
+    return m;
   }
 
   // then check for approximate matches
-  for (const key in macAddresses) {
-    if (!name || key.toLowerCase().indexOf(name) > -1) {
-      if (Object.hasOwnProperty.call(macAddresses, key)) {
-        const candidate = macAddresses[key].filter(
-          (m) => !m.internal && m.mac !== "00:00:00:00:00:00"
-        )[0];
-        if (candidate) {
-          return candidate;
-        }
-      }
-    }
-  }
-  return undefined;
+  m = macAddresses.find(
+    (m) =>
+      (!name ||
+        (m.iface &&
+          name &&
+          m.iface.toLowerCase().indexOf(name.toLowerCase()) > -1)) &&
+      !m.internal &&
+      m.mac &&
+      m.mac !== "00:00:00:00:00:00"
+  );
+
+  // then check for type matches
+  m = macAddresses.find((m) => {
+    (!name || (m.iface && name && m.type === name)) &&
+      !m.internal &&
+      m.mac &&
+      m.mac !== "00:00:00:00:00:00";
+  });
+
+  return m;
 }
 
 function primaryMacAddress(macAddresses) {
@@ -42,7 +49,7 @@ function primaryMacAddress(macAddresses) {
     ethernet = getMac(macAddresses, "eth");
   }
   if (!ethernet) {
-    ethernet = getMac(macAddresses);
+    ethernet = getMac(macAddresses, "wired");
   }
 
   const primaryMacAddresses = [];

@@ -1,4 +1,4 @@
-const os = require("os");
+const si = require("systeminformation");
 const fs = require("fs");
 const path = require("path");
 const logger = require("electron-log");
@@ -6,7 +6,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 const { getLicenseFileDirectories } = require("../src/license-file");
 
 contextBridge.exposeInMainWorld("electron", {
-  getMacAddress: () => os.networkInterfaces(),
+  getMacAddress: () => si.networkInterfaces(),
   getToken: () => {
     return window.process.argv.slice(-2)[0];
   },
