@@ -264,6 +264,19 @@
 
       Once you click Activate, the licenses will be available for use
 
+      <b-form-group
+        id="macInputGroup"
+        label="Your MAC ID"
+        label-for="macInput"
+        description="The MAC ID is used to lock the license to this machine.  Usually you can use the default MAC ID"
+      >
+        <b-form-select
+          id="macInput"
+          v-model="selected"
+          :options="options"
+        ></b-form-select>
+      </b-form-group>
+
       <b-button @click="generate" class="mr-2" variant="primary"
         >Activate</b-button
       >
@@ -313,13 +326,17 @@ import axios from "axios";
 import { primaryMacAddress } from "../mac-address";
 
 export default {
+  props: {
+    macAddresses: Object,
+  },
   data() {
     return {
-      baseUrl: "https://licenseactivation-xba.dnv.com",
+      //baseUrl: "https://licenseactivation-xba.dnv.com",
       //baseUrl: "https://licenseactivation-uat.dnv.com",
       //baseUrl: "https://licenseactivation.dnv.com",
-      //baseUrl: "http://localhost:30009",
+      baseUrl: "http://localhost:30009",
       status: "Init", //Design
+      selected: undefined,
       message: "",
       transferFailedMessage: "Reassignment failed",
       transferFailedComment: "",
@@ -328,21 +345,14 @@ export default {
       selectedLicenses: [],
       value: 0,
       transfereeEmail: "",
-      macAddresses: undefined,
     };
   },
   computed: {
     primaryMacAddress() {
-      const result = primaryMacAddress(this.macAddresses);
-      window.electron.log(result);
-      return result;
+      return primaryMacAddress(this.macAddresses);
     },
     primaryMac() {
-      return this.primaryMacAddress
-        .map((p) => {
-          return p.mac.replace(/:/g, "");
-        })
-        .join(" ");
+      return this.primaryMacAddress.mac.replace(/:/g, "");
     },
     emailValidation() {
       if (!this.transfereeEmail.length) {
@@ -425,6 +435,12 @@ export default {
         this.setStatus("Loaded");
       }
 
+      const defaultOption = this.options.find(
+        (o) => o.value.mac == this.primaryMacAddress.mac
+      );
+
+      this.selected = defaultOption.value;
+
       if (this.status === "Design") {
         this.message = "Activating license ...";
         this.availableLicenses = [
@@ -494,10 +510,10 @@ export default {
     },
     async generate() {
       try {
-        window.electron.log(`activating licenses for ${this.primaryMac}`);
+        window.electron.log(`activating licenses for ${this.selected.mac}`);
 
         this.setStatus("Running");
-        this.message = `Activating license using MAC ID(s) ${this.primaryMac}...`;
+        this.message = `Activating license using MAC ID ${this.selected.mac}...`;
 
         const payloadBase64 = this.token.split(".")[1]; // the payload is the second dot-separated component of the JWT
         const jwt = JSON.parse(
