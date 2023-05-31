@@ -78,7 +78,7 @@
         @click="next"
         class="mr-2"
         variant="primary"
-        :disabled="!selectedLicenses.length || !macAddresses"
+        :disabled="!selectedLicenses.length"
         >Activate</b-button
       >
       <b-button
@@ -353,6 +353,24 @@ export default {
         /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
       return emailFormat.test(this.transfereeEmail.toLowerCase());
     },
+    options() {
+      let def = true;
+      const result = [];
+      for (const key in this.macAddresses) {
+        if (Object.hasOwnProperty.call(this.macAddresses, key)) {
+          const macAddress = this.macAddresses[key][0];
+          if (macAddress && !macAddress.internal) {
+            let option = {
+              value: macAddress,
+              text: `${key}: ${macAddress.mac} ${def ? "(default)" : ""}`,
+            };
+            def = false;
+            result.push(option);
+          }
+        }
+      }
+      return result;
+    },
     hasLicensesLeft() {
       return this.availableLicenses.length - this.selectedLicenses.length;
     },
@@ -381,10 +399,6 @@ export default {
         this.status = "ProxyAuthError";
         return;
       }
-
-      window.electron.getMacAddress().then((macAddresses) => {
-        this.macAddresses = macAddresses;
-      });
 
       window.electron.log("loading licenses");
 
@@ -496,7 +510,7 @@ export default {
             (a) => a.opportunityId === selectedLicense
           ).productInfo;
 
-          this.message = `Activating license for ${productInfo} using MAC ID(s) ${this.primaryMac}...`;
+          this.message = `Activating license for ${productInfo} using mac address ${this.selected.mac}...`;
 
           window.electron.log(this.message);
 

@@ -1,66 +1,58 @@
 function getMac(macAddresses, name) {
-  // exact match first
-  let m = macAddresses.find(
-    (m) =>
-      (!name ||
-        (m.iface && name && m.iface.toLowerCase() === name.toLowerCase())) &&
-      !m.internal &&
-      m.mac &&
-      m.mac !== "00:00:00:00:00:00"
-  );
-
-  if (m) {
-    return m;
+  //exact match first
+  for (const key in macAddresses) {
+    if (!name || key.toLowerCase() === name) {
+      if (Object.hasOwnProperty.call(macAddresses, key)) {
+        const candidate = macAddresses[key].filter(
+          (m) => !m.internal && m.mac !== "00:00:00:00:00:00"
+        )[0];
+        if (candidate) {
+          return candidate;
+        }
+      }
+    }
   }
 
-  // then check for approximate matches
-  m = macAddresses.find(
-    (m) =>
-      (!name ||
-        (m.iface &&
-          name &&
-          m.iface.toLowerCase().indexOf(name.toLowerCase()) > -1)) &&
-      !m.internal &&
-      m.mac &&
-      m.mac !== "00:00:00:00:00:00"
-  );
-
-  // then check for type matches
-  m = macAddresses.find((m) => {
-    (!name || (m.iface && name && m.type === name)) &&
-      !m.internal &&
-      m.mac &&
-      m.mac !== "00:00:00:00:00:00";
-  });
-
-  return m;
+  //then check for approximate matches
+  for (const key in macAddresses) {
+    if (!name || key.toLowerCase().indexOf(name) > -1) {
+      if (Object.hasOwnProperty.call(macAddresses, key)) {
+        const candidate = macAddresses[key].filter((m) => !m.internal)[0];
+        if (candidate) {
+          return candidate;
+        }
+      }
+    }
+  }
+  return undefined;
 }
 
 function primaryMacAddress(macAddresses) {
-  let wireless = getMac(macAddresses, "wireless");
-  if (!wireless) {
-    wireless = getMac(macAddresses, "wi-fi");
-  }
-  if (!wireless) {
-    wireless = getMac(macAddresses, "wifi");
-  }
-  let ethernet = getMac(macAddresses, "ethernet");
-  if (!ethernet) {
-    ethernet = getMac(macAddresses, "eth");
-  }
-  if (!ethernet) {
-    ethernet = getMac(macAddresses, "wired");
-  }
-
-  const primaryMacAddresses = [];
+  const wireless = getMac(macAddresses, "wireless");
   if (wireless) {
-    primaryMacAddresses.push(wireless);
+    return wireless;
   }
+  const wifi1 = getMac(macAddresses, "wi-fi");
+  if (wifi1) {
+    return wifi1;
+  }
+  const wifi2 = getMac(macAddresses, "wifi");
+  if (wifi2) {
+    return wifi2;
+  }
+  const ethernet = getMac(macAddresses, "ethernet");
   if (ethernet) {
-    primaryMacAddresses.push(ethernet);
+    return ethernet;
   }
-
-  return primaryMacAddresses;
+  const eth = getMac(macAddresses, "eth");
+  if (eth) {
+    return eth;
+  }
+  const def = getMac(macAddresses);
+  if (def) {
+    return def;
+  }
+  return undefined;
 }
 
 module.exports = {
