@@ -414,7 +414,7 @@ export default {
 
       if (load) {
         axios
-          .get(`${this.baseUrl}/api/availableLicenses`, {
+          .get(`${this.baseUrl}/api/availableLicenses/`, {
             headers: { Authorization: `Bearer ${this.token}` },
           })
           .then((al) => {
