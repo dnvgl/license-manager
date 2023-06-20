@@ -331,8 +331,8 @@ export default {
   },
   data() {
     return {
-      baseUrl: "https://licenseactivation-xba.dnv.com",
-      //baseUrl: "https://licenseactivation-uat.dnv.com",
+      //baseUrl: "https://licenseactivation-xba.dnv.com",
+      baseUrl: "https://licenseactivation-uat.dnv.com",
       //baseUrl: "https://licenseactivation.dnv.com",
       //baseUrl: "http://localhost:30009",
       status: "Init", //Design
